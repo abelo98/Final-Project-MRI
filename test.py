@@ -1,9 +1,13 @@
-import numpy as np
+from json.tool import main
+from scaner import Scaner
+from irm import Vector_Space_Model
 
-l = {3:110,1:14}
-l = sorted(l.items(),key=lambda kv:kv[1],reverse=True)
+def main():
+    sc = Scaner()
+    vsm = Vector_Space_Model(5,'/media/abelo/TERA/School/5to/SRI/Proyecto Final SRI/corpus') 
 
-# n = np.linalg.norm(list(l.values()))
+    vsm.calc_tf()
 
-print(l[:10])
+if __name__ == '__main__':
+    main()
 
