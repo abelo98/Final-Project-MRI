@@ -5,7 +5,7 @@ from irm import Vector_Space_Model
 
 
 def main():
-    sc = Scaner('/media/abelo/TERA/School/5to/SRI/Proyecto Final SRI/corpus')
+    sc = Scaner('/media/abelo/TERA/School/5to/SRI/Proyecto Final SRI/corpus') #el frontend me deberia dar esta dir
     dir_files = list(sc.get_files())
     vsm = Vector_Space_Model(len(dir_files),dir_files,sc) 
 
@@ -16,12 +16,12 @@ def main():
     # print(vsm.doc_tf)
     # print(vsm.doc_wights)
 
-    q = sc.doc_to_tokens("otter and lion")
+    q = sc.doc_to_tokens("otter and lion")# este recibe la query
     vsm.calc_query_tf(q)
     vsm.calc_query_weights(0.5)
 
 
-    print(vsm.retrive_docs(2))
+    print(vsm.retrive_docs(2))# este metodo devuelve los docs
 
 
 
