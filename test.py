@@ -10,8 +10,11 @@ def main():
 
     vsm.calc_tf()
     vsm.calc_idf()
-    # print(vsm.doc_tf)
-    print(vsm.idf)
+    vsm.calc_weights()
+    # print(vsm.idf)
+    print(vsm.doc_tf)
+    # print(vsm.doc_wights)
+
 
 
 if __name__ == '__main__':

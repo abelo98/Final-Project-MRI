@@ -22,25 +22,20 @@ class Vector_Space_Model:
         for dj,file in enumerate(files):
             aux = {}
             path_file = os.path.join(self.corpus_path, file)
-            new_doc = 1
+    
             if os.path.isfile(path_file):
                 plain_text = self.sc.get_text(path_file)
                 tokens = self.sc.doc_to_tokens(plain_text)
                 
                 for t in tokens:
                     try:
-                        self.invert_index[t]
-                        if new_doc:
-                            self.invert_index[t] += 1 
-                            new_doc = 0
-                    except KeyError:
-                        self.invert_index[t] = 1 
-                        new_doc = 0
-
-                    try:
                         aux[t,dj] += 1
                     except KeyError:
                         aux[t,dj] = 1
+                        try:
+                            self.invert_index[t] += 1 
+                        except KeyError:
+                            self.invert_index[t] = 1 
 
                 max_freq_tok = max(aux.values())
                 aux = {(key,dj):aux[key,dj]/max_freq_tok for key,_ in aux}
@@ -53,7 +48,11 @@ class Vector_Space_Model:
     def calc_weights(self):
         for t in self.invert_index:
             for d in range(self.corpus_size):
-                self.doc_wights[t,d] = self.doc_tf[t,d] * self.idf[t]
+                try:
+                    self.doc_wights[t,d] = self.doc_tf[t,d] * self.idf[t]
+                except KeyError:
+                    pass
+                    # self.doc_wights[t,d] = 0
 
     def calc_query_tf(self,query):
         for t in query:
