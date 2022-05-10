@@ -1,4 +1,5 @@
 import re
+from os.path import isfile,join
 import string
 from nltk.tokenize import word_tokenize
 from nltk.stem.porter import PorterStemmer
@@ -7,8 +8,8 @@ from nltk.corpus import stopwords
 
 
 class Scaner:
-    def __init__(self) -> None:
-        pass
+    def __init__(self,path) -> None:
+        self.corpus_path = path
 
     def get_text(self,path_file):
         with open(path_file,'r') as file:
@@ -35,3 +36,14 @@ class Scaner:
         # porter = PorterStemmer()
         # tokens = [porter.stem(word) for word in tokens]
         return tokens
+
+    def __lbda__(self,file):
+        f = join(self.corpus_path, file)
+        if isfile(f):
+            return f
+
+    def get_files(self):
+        files = os.listdir(self.corpus_path)
+        f = map(self.__lbda__, files)
+        
+        return f

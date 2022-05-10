@@ -1,10 +1,10 @@
+from lib2to3.pgen2 import token
 import numpy as np
 import math
-import os
-from scaner import Scaner
+# import scaner
 
 class Vector_Space_Model:
-    def __init__(self,corpus_size, path) -> None:
+    def __init__(self,corpus_size, files,sc) -> None:
         self.query_tf = {}
         self.doc_tf = {}
 
@@ -13,33 +13,33 @@ class Vector_Space_Model:
         self.doc_wights = {}
         self.query_wights = {}
         self.sim = {}
+        self.number_to_doc = {}
+
         self.corpus_size = corpus_size
-        self.corpus_path = path
-        self. sc = Scaner()
+        self.files = files
+        self. sc = sc
 
     def calc_tf(self):
-        files = os.listdir(self.corpus_path)
-        for dj,file in enumerate(files):
+        
+        for dj,file in enumerate(self.files):
             aux = {}
-            path_file = os.path.join(self.corpus_path, file)
-    
-            if os.path.isfile(path_file):
-                plain_text = self.sc.get_text(path_file)
-                tokens = self.sc.doc_to_tokens(plain_text)
-                
-                for t in tokens:
-                    try:
-                        aux[t,dj] += 1
-                    except KeyError:
-                        aux[t,dj] = 1
-                        try:
-                            self.invert_index[t] += 1 
-                        except KeyError:
-                            self.invert_index[t] = 1 
+            self.number_to_doc[dj] = file
+            plain_text = self.sc.get_text(file)
+            tokens = self.sc.doc_to_tokens(plain_text)
 
-                max_freq_tok = max(aux.values())
-                aux = {(key,dj):aux[key,dj]/max_freq_tok for key,_ in aux}
-                self.doc_tf.update(aux)
+            for t in tokens:
+                try:
+                    aux[t,dj] += 1
+                except KeyError:
+                    aux[t,dj] = 1
+                    try:
+                        self.invert_index[t] += 1 
+                    except KeyError:
+                        self.invert_index[t] = 1 
+
+            max_freq_tok = max(aux.values())
+            aux = {(key,dj):aux[key,dj]/max_freq_tok for key,_ in aux}
+            self.doc_tf.update(aux)
 
     def calc_idf(self):
         for t in self.invert_index:
@@ -62,7 +62,7 @@ class Vector_Space_Model:
                 self.query_tf[t] = 1
 
         max_freq_tok = max(self.query_tf.values())
-        self.query_tf = {key:self.query_tf[key]/max_freq_tok for key,_ in self.query_tf}
+        self.query_tf = {key:self.query_tf[key]/max_freq_tok for key in self.query_tf}
 
 
     def calc_query_weights(self,alpha):
@@ -79,13 +79,18 @@ class Vector_Space_Model:
         for dj in range(self.corpus_size):
             vect_prod = 0
             for t in self.query_wights:
-                vect_prod += self.doc_wights[t,dj] * self.query_wights[t]
+                try:
+                    vect_prod += self.doc_wights[t,dj] * self.query_wights[t]
+                except KeyError:
+                    pass
 
             norm_d = np.linalg.norm(list(self.doc_wights.values()))
             norm_q = np.linalg.norm(list(self.query_wights.values()))
 
             self.sim[dj] = vect_prod/(norm_d * norm_q)
 
-        return sorted(self.sim.items(),key=lambda kv:kv[1],reverse=True)[0:threshold]
+        return sorted(self.sim.items(),key=lambda kv:kv[1],reverse=True)[:threshold]
             
+    def retrive_docs(self,threshold):
+        return [self.number_to_doc[dj] for dj,_ in self.similarity(threshold)]
 
