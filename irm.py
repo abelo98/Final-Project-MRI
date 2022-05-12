@@ -1,7 +1,5 @@
-from lib2to3.pgen2 import token
 import numpy as np
 import math
-# import scaner
 
 class Vector_Space_Model:
     def __init__(self,corpus_size) -> None:
@@ -16,12 +14,9 @@ class Vector_Space_Model:
         self.number_to_doc = {}
 
         self.corpus_size = corpus_size
-        # self.files = files
-        # self. sc = sc
-
+        
     def calc_tf(self, tokens, dj, file):
         aux = {}
-        self.number_to_doc[dj] = file
         for t in tokens:
             try:
                 aux[t,dj] += 1
@@ -48,7 +43,6 @@ class Vector_Space_Model:
                 except KeyError:
                     pass
                     
-
     def calc_query_tf(self,query):
         for t in query:
             try:
