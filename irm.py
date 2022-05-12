@@ -4,7 +4,7 @@ import math
 # import scaner
 
 class Vector_Space_Model:
-    def __init__(self,corpus_size, files,sc) -> None:
+    def __init__(self,corpus_size) -> None:
         self.query_tf = {}
         self.doc_tf = {}
 
@@ -16,30 +16,25 @@ class Vector_Space_Model:
         self.number_to_doc = {}
 
         self.corpus_size = corpus_size
-        self.files = files
-        self. sc = sc
+        # self.files = files
+        # self. sc = sc
 
-    def calc_tf(self):
-        
-        for dj,file in enumerate(self.files):
-            aux = {}
-            self.number_to_doc[dj] = file
-            plain_text = self.sc.get_text(file)
-            tokens = self.sc.doc_to_tokens(plain_text)
-
-            for t in tokens:
+    def calc_tf(self, tokens, dj, file):
+        aux = {}
+        self.number_to_doc[dj] = file
+        for t in tokens:
+            try:
+                aux[t,dj] += 1
+            except KeyError:
+                aux[t,dj] = 1
                 try:
-                    aux[t,dj] += 1
+                    self.invert_index[t] += 1 
                 except KeyError:
-                    aux[t,dj] = 1
-                    try:
-                        self.invert_index[t] += 1 
-                    except KeyError:
-                        self.invert_index[t] = 1 
+                    self.invert_index[t] = 1 
 
-            max_freq_tok = max(aux.values())
-            aux = {(key,dj):aux[key,dj]/max_freq_tok for key,_ in aux}
-            self.doc_tf.update(aux)
+        max_freq_tok = max(aux.values())
+        aux = {(key,dj):aux[key,dj]/max_freq_tok for key,_ in aux}
+        self.doc_tf.update(aux)
 
     def calc_idf(self):
         for t in self.invert_index:
@@ -52,7 +47,7 @@ class Vector_Space_Model:
                     self.doc_wights[t,d] = self.doc_tf[t,d] * self.idf[t]
                 except KeyError:
                     pass
-                    # self.doc_wights[t,d] = 0
+                    
 
     def calc_query_tf(self,query):
         for t in query:

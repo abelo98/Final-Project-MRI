@@ -12,12 +12,12 @@ class Scaner:
         self.corpus_path = path
 
     def get_text(self,path_file):
-        with open(path_file,'r') as file:
+        with open(path_file, encoding='utf8', errors='ignore') as file:
             plain_text = file.read()
             file.close()
             return plain_text
 
-    def __remove_reg__(self,tokens):
+    def __remove_reg(self,tokens):
         re_punc = re.compile('[%s]' % re.escape(string.punctuation))
         stripped = [re_punc.sub('', w) for w in tokens]
         return stripped
@@ -26,7 +26,7 @@ class Scaner:
         tokens = word_tokenize(plain_text)
         tokens = [t.lower() for t in tokens]
         # remove regular expr. 
-        tokens = self.__remove_reg__(tokens)
+        tokens = self.__remove_reg(tokens)
         # filters all non words
         tokens = [word for word in tokens if word.isalpha()]
         # filters all stepwords
@@ -37,13 +37,13 @@ class Scaner:
         # tokens = [porter.stem(word) for word in tokens]
         return tokens
 
-    def __lbda__(self,file):
+    def __lbda(self,file):
         f = join(self.corpus_path, file)
         if isfile(f):
             return f
 
-    def get_files(self):
-        files = os.listdir(self.corpus_path)
-        f = map(self.__lbda__, files)
+    def get_files(self,corpus_path):
+        files = os.listdir(corpus_path)
+        f = map(self.__lbda, files)
         
         return f

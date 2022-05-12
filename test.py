@@ -1,29 +1,12 @@
-from json.tool import main
-from ntpath import join
-from scaner import Scaner
-from irm import Vector_Space_Model
-
+from pipeline import Pipeline
 
 def main():
-    sc = Scaner('/media/abelo/TERA/School/5to/SRI/Proyecto Final SRI/corpus') #el frontend me deberia dar esta dir
-    dir_files = list(sc.get_files())
-    vsm = Vector_Space_Model(len(dir_files),dir_files,sc) 
+    pipeline = Pipeline('/media/abelo/TERA/School/5to/SRI/PF SRI/Test Collections/20 Newsgroups/20news-18828')
+    pipeline.start()
+    pipeline.process_query("volvo car")
+    print(pipeline.retrive_docs())
 
-    vsm.calc_tf()
-    vsm.calc_idf()
-    vsm.calc_weights()
-    # print(vsm.idf)
-    # print(vsm.doc_tf)
-    # print(vsm.doc_wights)
-
-    q = sc.doc_to_tokens("otter and lion")# este recibe la query
-    vsm.calc_query_tf(q)
-    vsm.calc_query_weights(0.5)
-
-
-    print(vsm.retrive_docs(2))# este metodo devuelve los docs
-
-
+   
 
 if __name__ == '__main__':
     main()
