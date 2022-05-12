@@ -8,6 +8,7 @@ TF_DOCS_FILE = "tf_doc_table"
 IDF_FILE = "idf_table"
 INVERT_LIST_FILE = "invert_list_table" #no hace falta a menos que cambie la coleccion
 DOCS_W = "docs_weights"
+NORM_DOCS = "norm_docs"
 
 
 
@@ -39,24 +40,29 @@ class Pipeline:
             self.vsm.doc_tf = self.__retrive_from_disk(TF_DOCS_FILE)
             self.vsm.idf = self.__retrive_from_disk(IDF_FILE)
             self.vsm.doc_wights = self.__retrive_from_disk(DOCS_W)
+            self.vsm.doc_norm = self.__retrive_from_disk(NORM_DOCS)
         except:
             for dj,file in enumerate(self.files):
                 plain_text = self.sc.get_text(file)
                 tokens = self.sc.doc_to_tokens(plain_text)
-                self.vsm.calc_tf(tokens,dj,file)
-
+                self.vsm.calc_tf(tokens,dj)
             self.vsm.calc_idf()
             self.vsm.calc_weights()
 
             self.__save_to_disk(TF_DOCS_FILE,self.vsm.doc_tf)
             self.__save_to_disk(IDF_FILE,self.vsm.idf)
             self.__save_to_disk(DOCS_W,self.vsm.doc_wights) 
+            self.__save_to_disk(NORM_DOCS,self.vsm.doc_norm) 
+
+        print("out of calc tf")
+        
 
 
     def process_query(self,query,alpha = 0.5):
         q = self.sc.doc_to_tokens(query)
         self.vsm.calc_query_tf(q)
         self.vsm.calc_query_weights(alpha)
+        print("end process query")
 
     def retrive_docs(self, threshold = 10):
         return self.vsm.retrive_docs(threshold)

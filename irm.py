@@ -12,10 +12,11 @@ class Vector_Space_Model:
         self.query_wights = {}
         self.sim = {}
         self.number_to_doc = {}
+        self.doc_norm = {}
 
         self.corpus_size = corpus_size
         
-    def calc_tf(self, tokens, dj, file):
+    def calc_tf(self, tokens, dj):
         aux = {}
         for t in tokens:
             try:
@@ -42,6 +43,9 @@ class Vector_Space_Model:
                     self.doc_wights[t,d] = self.doc_tf[t,d] * self.idf[t]
                 except KeyError:
                     pass
+        for dj in range(self.corpus_size):
+            self.doc_norm[dj] = np.linalg.norm([self.doc_wights[k] for k in self.doc_wights if k[1] == dj])
+
                     
     def calc_query_tf(self,query):
         for t in query:
@@ -73,10 +77,12 @@ class Vector_Space_Model:
                 except KeyError:
                     pass
 
-            norm_d = np.linalg.norm(list(self.doc_wights.values()))
+            norm_d = self.doc_norm[dj]
             norm_q = np.linalg.norm(list(self.query_wights.values()))
-
-            self.sim[dj] = vect_prod/(norm_d * norm_q)
+            norm_p = norm_d * norm_q
+            if norm_p and vect_prod: 
+                self.sim[dj] = vect_prod/(norm_d * norm_q)
+        
 
         return sorted(self.sim.items(),key=lambda kv:kv[1],reverse=True)[:threshold]
             
