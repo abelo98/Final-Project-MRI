@@ -24,7 +24,8 @@ class Scaner:
     def doc_to_tokens(self,plain_text):
         plain_text = re.sub('from:(.*\n)', '', plain_text)
         plain_text = re.sub('[\w]+[\._]?[\w]+[@]+[\w.]+', '', plain_text)
-        # plain_text = re.sub('Subject', '', plain_text)
+        plain_text = re.sub('Subject:|subject:', '', plain_text)
+
         tokens = word_tokenize(plain_text)
         tokens = [t.lower() for t in tokens]
         # remove regular expr. 
