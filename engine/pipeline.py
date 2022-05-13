@@ -1,5 +1,6 @@
 from os import listdir
 from os.path import join,isfile
+import re
 from irm import Vector_Space_Model
 from scaner import Scaner
 import pickle
@@ -9,7 +10,6 @@ IDF_FILE = "idf_table"
 INVERT_LIST_FILE = "invert_list_table" #no hace falta a menos que cambie la coleccion
 DOCS_W = "docs_weights"
 NORM_DOCS = "norm_docs"
-
 
 
 class Pipeline:
@@ -37,7 +37,7 @@ class Pipeline:
 
     def __start_search_engine_indexing(self):
         try:
-            self.vsm.doc_tf = self.__retrive_from_disk(TF_DOCS_FILE)
+            # self.vsm.doc_tf = self.__retrive_from_disk(TF_DOCS_FILE)
             self.vsm.idf = self.__retrive_from_disk(IDF_FILE)
             self.vsm.doc_wights = self.__retrive_from_disk(DOCS_W)
             self.vsm.doc_norm = self.__retrive_from_disk(NORM_DOCS)
@@ -49,23 +49,45 @@ class Pipeline:
             self.vsm.calc_idf()
             self.vsm.calc_weights()
 
-            self.__save_to_disk(TF_DOCS_FILE,self.vsm.doc_tf)
+            # self.__save_to_disk(TF_DOCS_FILE,self.vsm.doc_tf)
             self.__save_to_disk(IDF_FILE,self.vsm.idf)
             self.__save_to_disk(DOCS_W,self.vsm.doc_wights) 
             self.__save_to_disk(NORM_DOCS,self.vsm.doc_norm) 
-
-        print("out of calc tf")
         
-
-
     def process_query(self,query,alpha = 0.5):
         q = self.sc.doc_to_tokens(query)
         self.vsm.calc_query_tf(q)
         self.vsm.calc_query_weights(alpha)
-        print("end process query")
-
+        
     def retrive_docs(self, threshold = 10):
         return self.vsm.retrive_docs(threshold)
+
+    def get_subjects(self,file_paths):
+        subj = []
+        for fp in file_paths:
+            with open(fp) as f:
+                file = f.read()
+                subject = re.findall('Subject:[^\n]*', file)
+                if subject:
+                    subject = subject[0].replace('Subject:','')
+                    subject = subject.replace('Re:','')
+                    subject = subject.strip()
+                else:
+                    subject = fp
+
+                subj.append(subject)
+        return subj
+
+    def make_response(self,file_paths, subjects):
+        body = []
+
+        for i in range(len(file_paths)):
+            body.append({
+                "path": file_paths[i],
+                "subject": subjects[i]
+            })
+
+        return body
 
     def __save_to_disk(self,file_name,struct):
         try:

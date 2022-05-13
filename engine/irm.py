@@ -83,7 +83,6 @@ class Vector_Space_Model:
             if norm_p and vect_prod: 
                 self.sim[dj] = vect_prod/(norm_d * norm_q)
         
-
         return sorted(self.sim.items(),key=lambda kv:kv[1],reverse=True)[:threshold]
             
     def retrive_docs(self,threshold):

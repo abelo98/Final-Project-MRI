@@ -6,9 +6,14 @@ REAL_CORPUS = '/media/abelo/TERA/School/5to/SRI/PF SRI/Test Collections/20 Newsg
 def main():
     pipeline = Pipeline(REAL_CORPUS)
     pipeline.start()
-    pipeline.process_query("Cuba")
-    print(pipeline.retrive_docs())
+    pipeline.process_query("volvo car")
+    file_paths = pipeline.retrive_docs()
 
+    s = pipeline.get_subjects(file_paths)
+    response =  pipeline.make_response(file_paths,s)
+    print(s)
+    return response
+    
    
 
 if __name__ == '__main__':
