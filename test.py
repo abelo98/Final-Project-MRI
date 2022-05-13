@@ -6,7 +6,7 @@ REAL_CORPUS = '/media/abelo/TERA/School/5to/SRI/PF SRI/Test Collections/20 Newsg
 def main():
     pipeline = Pipeline(REAL_CORPUS)
     pipeline.start()
-    pipeline.process_query("subject Subject reef")
+    pipeline.process_query("subject: Subject reef")
     print(pipeline.retrive_docs())
 
    
