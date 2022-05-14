@@ -13,8 +13,6 @@ def main():
     response =  pipeline.make_response(file_paths,s)
     print(s)
     return response
-    
-   
 
 if __name__ == '__main__':
     main()
