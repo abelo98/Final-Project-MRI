@@ -41,6 +41,7 @@ class Pipeline:
             self.vsm.idf = self.__retrive_from_disk(IDF_FILE)
             self.vsm.doc_wights = self.__retrive_from_disk(DOCS_W)
             self.vsm.doc_norm = self.__retrive_from_disk(NORM_DOCS)
+            print(self.vsm.doc_norm[0])
         except:
             for dj,file in enumerate(self.files):
                 plain_text = self.sc.get_text(file)
