@@ -8,26 +8,26 @@
       <SearchInput ref="searchInput" from-search @submit="onSubmit"/>
     </div>
     <div class="body">
-      <div v-for="doc in documents" :key="doc.path" class="document-retrieve">
+      <div v-for="doc in documents" :key="doc.id" class="document-retrieve">
         <div class="content">
           <div class="text-content">
-            <!--            <router-link-->
-            <!--              :to="{ name: 'document', params: { id: doc.path } }"-->
-            <!--              target="_blank"-->
-            <!--            >-->
-            <!--              Open document-->
-            <!--            </router-link>-->
-            <a :href="doc.path">Open document</a>
+            <router-link
+                :to="{ name: 'document', params: { id: doc.id }}"
+                target="_blank"
+                @click.prevent="openDocument(doc.id)"
+            >
+              Open document
+            </router-link>
             <p class="text-preview">{{ doc.subject }}</p>
           </div>
         </div>
         <div class="doc-metrics">
-          <img :src="likeImg" class="like" @click="setFeedback(doc.path, 1)"/>
+          <img :src="likeImg" class="like" @click="setFeedback(doc.id, 1)"/>
           <p class="ranking">-</p>
           <img
               :src="dislikeImg"
               class="dislike"
-              @click="setFeedback(doc.path, -1)"
+              @click="setFeedback(doc.id, -1)"
           />
         </div>
       </div>
@@ -68,26 +68,24 @@ export default {
     },
     async getDocuments(value) {
       this.loading = true
-
       console.log(value)
       try {
-        const data = await fetch(`http://127.0.0.1:8000/query?value=${value}`);
-        let body = JSON.parse(await data.text());
+        // const data = await fetch(`http://127.0.0.1:8000/query?value=${value}`);
+        // let body = JSON.parse(await data.text());
 
-        this.documents = body;
-
-        // this.documents = [
-        //   {
-        //     path: "/jch/",
-        //     subject: "el subject del doc"
-        //   }
-        // ]
+        this.documents = [
+          {
+            id: '1',
+            subject: 'Subject 1'
+          }
+        ];
 
       } catch (err) {
         console.log(err);
       }
       this.loading = false
-    },
+    }
+    ,
     async setFeedback(docId, value) {
       try {
         let headers = new Headers()
@@ -105,12 +103,15 @@ export default {
       } catch (err) {
         console.log(err);
       }
-    },
+    }
+    ,
     openDocument(id) {
       this.$router.push({name: "document", params: {id}});
-    },
-  },
-};
+    }
+    ,
+  }
+}
+;
 </script>
 
 <style lang="scss" scoped>

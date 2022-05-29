@@ -4,6 +4,7 @@ from fastapi.responses import RedirectResponse, FileResponse, HTMLResponse
 from pipeline import Pipeline
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+import os
 
 
 class Item(BaseModel):
@@ -22,7 +23,8 @@ app.add_middleware(
 
 app.mount("/static", StaticFiles(directory="./static"), name="static")
 
-pipeline = None
+pipeline = Pipeline(os.path.join(os.getcwd(), 'corpus'))
+pipeline.start()
 
 
 @app.get("/", response_class=FileResponse)
@@ -31,14 +33,12 @@ def read_index(request: Request):
     return FileResponse(path)
 
 
-@app.post("/corpus")
-async def set_corpus(path: Item):
-    print(path.path)
-    pipeline = Pipeline(path)
-    pipeline.start()
-
-
 @app.get("/query")
 def query_docs(value: str = ""):
     pipeline.process_query(value)
     return pipeline.retrive_docs()
+
+
+@app.get("/readfile")
+def read_file(id: str):
+    pass
