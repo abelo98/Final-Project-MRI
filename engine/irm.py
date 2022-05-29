@@ -13,6 +13,7 @@ class Vector_Space_Model:
         self.sim = {}
         self.number_to_doc = {}
         self.doc_norm = {}
+        self.docs_id = {}
 
         self.corpus_size = corpus_size
         
@@ -86,5 +87,5 @@ class Vector_Space_Model:
         return sorted(self.sim.items(),key=lambda kv:kv[1],reverse=True)[:threshold]
             
     def retrive_docs(self,threshold):
-        return [self.number_to_doc[dj] for dj,_ in self.similarity(threshold)]
+        return [(self.number_to_doc[dj],self.docs_id[dj]) for dj,_ in self.similarity(threshold)]
 

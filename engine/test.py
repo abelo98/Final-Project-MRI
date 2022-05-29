@@ -7,13 +7,12 @@ def main():
     pipeline = Pipeline(REAL_CORPUS)
     pipeline.start()
     pipeline.process_query("volvo car")
-    file_paths = pipeline.retrive_docs()
+    file_paths_and_ids = pipeline.retrive_docs()
 
-    s = pipeline.get_subjects(file_paths)
-    response =  pipeline.make_response(file_paths,s)
+    s = pipeline.get_subjects(file_paths_and_ids)
+    response =  pipeline.make_response(file_paths_and_ids,s)
     print(s)
     return response
 
 if __name__ == '__main__':
     main()
-

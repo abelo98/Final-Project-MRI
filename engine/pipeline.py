@@ -4,12 +4,14 @@ import re
 from irm import Vector_Space_Model
 from scaner import Scaner
 import pickle
+import uuid
 
 TF_DOCS_FILE = "tf_doc_table"
 IDF_FILE = "idf_table"
 INVERT_LIST_FILE = "invert_list_table" #no hace falta a menos que cambie la coleccion
 DOCS_W = "docs_weights"
 NORM_DOCS = "norm_docs"
+DOCS_IDS = "docs_ids"
 
 
 class Pipeline:
@@ -23,6 +25,7 @@ class Pipeline:
         self.vsm = Vector_Space_Model(corpus_size)
         self.vsm.number_to_doc = dict(zip(range(corpus_size),self.files))
         self.__start_search_engine_indexing()
+        
 
     def __scan_corpus(self,path):
         directories = listdir(path)
@@ -41,9 +44,10 @@ class Pipeline:
             self.vsm.idf = self.__retrive_from_disk(IDF_FILE)
             self.vsm.doc_wights = self.__retrive_from_disk(DOCS_W)
             self.vsm.doc_norm = self.__retrive_from_disk(NORM_DOCS)
-            print(self.vsm.doc_norm[0])
+            self.vsm.docs_id = self.__retrive_from_disk(DOCS_IDS)
         except:
             for dj,file in enumerate(self.files):
+                self.vsm.docs_id[dj] = uuid.uuid4()
                 plain_text = self.sc.get_text(file)
                 tokens = self.sc.doc_to_tokens(plain_text)
                 self.vsm.calc_tf(tokens,dj)
@@ -53,7 +57,9 @@ class Pipeline:
             # self.__save_to_disk(TF_DOCS_FILE,self.vsm.doc_tf)
             self.__save_to_disk(IDF_FILE,self.vsm.idf)
             self.__save_to_disk(DOCS_W,self.vsm.doc_wights) 
-            self.__save_to_disk(NORM_DOCS,self.vsm.doc_norm) 
+            self.__save_to_disk(NORM_DOCS,self.vsm.doc_norm)
+            self.__save_to_disk(DOCS_IDS,self.vsm.docs_id) 
+
         
     def process_query(self,query,alpha = 0.5):
         q = self.sc.doc_to_tokens(query)
@@ -65,7 +71,7 @@ class Pipeline:
 
     def get_subjects(self,file_paths):
         subj = []
-        for fp in file_paths:
+        for fp,_ in file_paths:
             with open(fp) as f:
                 file = f.read()
                 subject = re.findall('Subject:[^\n]*', file)
@@ -79,13 +85,14 @@ class Pipeline:
                 subj.append(subject)
         return subj
 
-    def make_response(self,file_paths, subjects):
+    def make_response(self,file_paths_id, subjects):
         body = []
 
-        for i in range(len(file_paths)):
+        for i in range(len(file_paths_id)):
             body.append({
-                "path": file_paths[i],
-                "subject": subjects[i]
+                "path": file_paths_id[i][0],
+                "subject": subjects[i],
+                "id": file_paths_id[i][1]
             })
 
         return body
