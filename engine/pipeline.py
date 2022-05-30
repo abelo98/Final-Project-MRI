@@ -2,7 +2,7 @@ from os import listdir
 from os.path import join,isfile
 import re
 from irm import Vector_Space_Model
-from scaner import Scaner
+from text_processor import Cleaner
 import pickle
 import uuid
 
@@ -19,11 +19,11 @@ class Pipeline:
         self.corpus_path = corpus_path
     
     def start(self):
-        self.sc = Scaner(self.corpus_path)
+        self.cl = Cleaner(self.corpus_path)
         self.files = self.__scan_corpus(self.corpus_path)
         corpus_size = len(self.files)
         self.vsm = Vector_Space_Model(corpus_size)
-        self.vsm.number_to_doc = dict(zip(range(corpus_size),self.files))
+        self.vsm.docs_id =  {uuid.uuid4():f for f in self.files}  
         self.__start_search_engine_indexing()
         
 
@@ -46,11 +46,13 @@ class Pipeline:
             self.vsm.doc_norm = self.__retrive_from_disk(NORM_DOCS)
             self.vsm.docs_id = self.__retrive_from_disk(DOCS_IDS)
         except:
-            for dj,file in enumerate(self.files):
-                self.vsm.docs_id[dj] = uuid.uuid4()
-                plain_text = self.sc.get_text(file)
-                tokens = self.sc.doc_to_tokens(plain_text)
+            print(len(self.vsm.docs_id.items()))
+            i = 0
+            for dj,file in self.vsm.docs_id.items():
+                plain_text = self.cl.get_text(file)
+                tokens = self.cl.doc_to_tokens(plain_text)
                 self.vsm.calc_tf(tokens,dj)
+            print("Calc idf")
             self.vsm.calc_idf()
             self.vsm.calc_weights()
 
@@ -62,28 +64,15 @@ class Pipeline:
 
         
     def process_query(self,query,alpha = 0.5):
-        q = self.sc.doc_to_tokens(query)
+        q = self.cl.doc_to_tokens(query)
         self.vsm.calc_query_tf(q)
         self.vsm.calc_query_weights(alpha)
         
-    def retrive_docs(self, threshold = 10):
-        return self.vsm.retrive_docs(threshold)
+    def retrive_id_docs(self, threshold = 10):
+        return self.vsm.retrive_ids(threshold)
 
-    def get_subjects(self,file_paths):
-        subj = []
-        for fp,_ in file_paths:
-            with open(fp) as f:
-                file = f.read()
-                subject = re.findall('Subject:[^\n]*', file)
-                if subject:
-                    subject = subject[0].replace('Subject:','')
-                    subject = subject.replace('Re:','')
-                    subject = subject.strip()
-                else:
-                    subject = fp
-
-                subj.append(subject)
-        return subj
+    def get_subjects(self,path_and_ids):
+        return self.cl.get_subjects(path_and_ids)
 
     def make_response(self,file_paths_id, subjects):
         body = []
@@ -110,3 +99,5 @@ class Pipeline:
         tf_docs_file = open(file_name,'rb')
         return pickle.load(tf_docs_file)
         
+    def retrive_doc(self,id):
+        return self.cl.get_text(self.vsm.docs_id[id])
