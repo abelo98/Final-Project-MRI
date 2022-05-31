@@ -3,15 +3,10 @@ import math
 
 class Vector_Space_Model:
     def __init__(self,corpus_size) -> None:
-        # self.query_tf = {}
         self.doc_tf = {}
-
         self.idf = {}
         self.invert_index = {}
         self.doc_wights = {}
-        # self.query_wights = {}
-        # self.sim = {}
-        # self.number_to_doc = {}
         self.doc_norm = {}
         self.docs_id = {}
 
