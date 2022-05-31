@@ -11,8 +11,9 @@ class Vector_Space_Model:
         self.doc_wights = {}
         self.query_wights = {}
         self.sim = {}
-        self.number_to_doc = {}
+        # self.number_to_doc = {}
         self.doc_norm = {}
+        self.docs_id = {}
 
         self.corpus_size = corpus_size
         
@@ -38,12 +39,12 @@ class Vector_Space_Model:
         
     def calc_weights(self):
         for t in self.invert_index:
-            for d in range(self.corpus_size):
+            for d in self.docs_id:
                 try:
                     self.doc_wights[t,d] = self.doc_tf[t,d] * self.idf[t]
                 except KeyError:
                     pass
-        for dj in range(self.corpus_size):
+        for dj in self.docs_id:
             self.doc_norm[dj] = np.linalg.norm([self.doc_wights[k] for k in self.doc_wights if k[1] == dj])
 
                     
@@ -69,7 +70,7 @@ class Vector_Space_Model:
             self.query_wights[t] = (alpha + (1-alpha) * self.query_tf[t]) * idf
 
     def similarity(self,threshold):
-        for dj in range(self.corpus_size):
+        for dj in self.docs_id:
             vect_prod = 0
             for t in self.query_wights:
                 try:
@@ -83,9 +84,8 @@ class Vector_Space_Model:
             if norm_p and vect_prod: 
                 self.sim[dj] = vect_prod/(norm_d * norm_q)
         
-
         return sorted(self.sim.items(),key=lambda kv:kv[1],reverse=True)[:threshold]
             
-    def retrive_docs(self,threshold):
-        return [self.number_to_doc[dj] for dj,_ in self.similarity(threshold)]
+    def retrive_ids(self,threshold):
+        return [(dj,self.docs_id[dj]) for dj,_ in self.similarity(threshold)]
 
