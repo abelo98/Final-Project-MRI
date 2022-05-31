@@ -4,6 +4,7 @@ from fastapi.responses import RedirectResponse, FileResponse, HTMLResponse
 from pipeline import Pipeline
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from uuid import UUID
 import os
 
 
@@ -46,4 +47,4 @@ def query_docs(value: str = ""):
 
 @app.get("/document/id/{id}")
 def read_file(id: str):
-    return pipeline.retrive_doc(id)
+    return pipeline.retrive_doc(UUID(id))

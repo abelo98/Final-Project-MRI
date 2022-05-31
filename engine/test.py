@@ -14,8 +14,9 @@ def main():
 
     s = pipeline.get_subjects(file_paths_and_ids)
     response =  pipeline.make_response(file_paths_and_ids,s)
-    txt = pipeline.retrive_doc(UUID('2e13dab8-5d7a-43cb-af22-bbfae7adaa4f'))
-    print(txt)
+    # txt = pipeline.retrive_doc(UUID('2e13dab8-5d7a-43cb-af22-bbfae7adaa4f'))
+    # print(txt)
+    print(response)
     return response
 
 
