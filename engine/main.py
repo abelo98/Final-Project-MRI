@@ -24,7 +24,7 @@ app.add_middleware(
 
 app.mount("/static", StaticFiles(directory="./static"), name="static")
 
-pipeline = Pipeline(os.path.join(os.getcwd(), 'corpus2'))
+pipeline = Pipeline(os.path.join(os.getcwd(), 'corpus'))
 pipeline.start()
 
 
@@ -36,11 +36,11 @@ def read_index(request: Request):
 
 @app.get("/query")
 def query_docs(value: str = ""):
-    pipeline.process_query(value)
-
-    file_paths_and_ids = pipeline.retrive_id_docs()
+    q_w = pipeline.process_query(value)
+    file_paths_and_ids = pipeline.retrive_id_docs(q_w)
     s = pipeline.get_subjects(file_paths_and_ids)
     response = pipeline.make_response(file_paths_and_ids, s)
+    print(s)
 
     return response
 

@@ -1,4 +1,5 @@
 from os import listdir
+import os
 from os.path import join, isfile
 import re
 from irm import Vector_Space_Model
@@ -39,19 +40,16 @@ class Pipeline:
 
     def __start_search_engine_indexing(self):
         try:
-            # self.vsm.doc_tf = self.__retrive_from_disk(TF_DOCS_FILE)
             self.vsm.idf = self.__retrive_from_disk(IDF_FILE)
             self.vsm.doc_wights = self.__retrive_from_disk(DOCS_W)
             self.vsm.doc_norm = self.__retrive_from_disk(NORM_DOCS)
             self.vsm.docs_id = self.__retrive_from_disk(DOCS_IDS)
         except:
-            print(len(self.vsm.docs_id.items()))
-            i = 0
             for dj, file in self.vsm.docs_id.items():
                 plain_text = self.cl.get_text(file)
                 tokens = self.cl.doc_to_tokens(plain_text)
                 self.vsm.calc_tf(tokens, dj)
-            print("Calc idf")
+
             self.vsm.calc_idf()
             self.vsm.calc_weights()
 
@@ -63,11 +61,11 @@ class Pipeline:
 
     def process_query(self, query, alpha=0.5):
         q = self.cl.doc_to_tokens(query)
-        self.vsm.calc_query_tf(q)
-        self.vsm.calc_query_weights(alpha)
+        q_tf = self.vsm.calc_query_tf(q)
+        return self.vsm.calc_query_weights(alpha,q_tf)
 
-    def retrive_id_docs(self, threshold=10):
-        return self.vsm.retrive_ids(threshold)
+    def retrive_id_docs(self, q_weights ,threshold=10):
+        return self.vsm.retrive_ids(threshold,q_weights)
 
     def get_subjects(self, path_and_ids):
         return self.cl.get_subjects(path_and_ids)
@@ -93,7 +91,7 @@ class Pipeline:
             print("Something went wrong saving to disk")
 
     def __retrive_from_disk(self, file_name):
-        tf_docs_file = open(file_name, 'rb')
+        tf_docs_file = open(os.path.join(os.getcwd(),file_name), 'rb')
         return pickle.load(tf_docs_file)
 
     def retrive_doc(self, id):

@@ -3,14 +3,14 @@ import math
 
 class Vector_Space_Model:
     def __init__(self,corpus_size) -> None:
-        self.query_tf = {}
+        # self.query_tf = {}
         self.doc_tf = {}
 
         self.idf = {}
         self.invert_index = {}
         self.doc_wights = {}
-        self.query_wights = {}
-        self.sim = {}
+        # self.query_wights = {}
+        # self.sim = {}
         # self.number_to_doc = {}
         self.doc_norm = {}
         self.docs_id = {}
@@ -49,43 +49,49 @@ class Vector_Space_Model:
 
                     
     def calc_query_tf(self,query):
+        query_tf = {}
         for t in query:
             try:
-                self.query_tf[t] += 1
+                query_tf[t] += 1
             except KeyError:
-                self.query_tf[t] = 1
+                query_tf[t] = 1
 
-        max_freq_tok = max(self.query_tf.values())
-        self.query_tf = {key:self.query_tf[key]/max_freq_tok for key in self.query_tf}
+        max_freq_tok = max(query_tf.values())
+        query_tf = {key:query_tf[key]/max_freq_tok for key in query_tf}
+        return query_tf
 
 
-    def calc_query_weights(self,alpha):
-        for t in self.query_tf:
+    def calc_query_weights(self,alpha,query_tf):
+        query_wights = {}
+        for t in query_tf:
             idf = 0
             try:
                 idf = self.idf[t]
             except KeyError: 
                 continue
             
-            self.query_wights[t] = (alpha + (1-alpha) * self.query_tf[t]) * idf
+            query_wights[t] = (alpha + (1-alpha) * query_tf[t]) * idf
 
-    def similarity(self,threshold):
+        return query_wights 
+
+    def similarity(self,threshold,query_wights):
+        sim = {}
         for dj in self.docs_id:
             vect_prod = 0
-            for t in self.query_wights:
+            for t in query_wights:
                 try:
-                    vect_prod += self.doc_wights[t,dj] * self.query_wights[t]
+                    vect_prod += self.doc_wights[t,dj] * query_wights[t]
                 except KeyError:
                     pass
 
             norm_d = self.doc_norm[dj]
-            norm_q = np.linalg.norm(list(self.query_wights.values()))
+            norm_q = np.linalg.norm(list(query_wights.values()))
             norm_p = norm_d * norm_q
             if norm_p and vect_prod: 
-                self.sim[dj] = vect_prod/(norm_d * norm_q)
+                sim[dj] = vect_prod/(norm_d * norm_q)
         
-        return sorted(self.sim.items(),key=lambda kv:kv[1],reverse=True)[:threshold]
+        return sorted(sim.items(),key=lambda kv:kv[1],reverse=True)[:threshold]
             
-    def retrive_ids(self,threshold):
-        return [(dj,self.docs_id[dj]) for dj,_ in self.similarity(threshold)]
+    def retrive_ids(self,threshold,q_weights):
+        return [(dj,self.docs_id[dj]) for dj,_ in self.similarity(threshold,q_weights)]
 
