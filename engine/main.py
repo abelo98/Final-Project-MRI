@@ -23,26 +23,27 @@ app.add_middleware(
 
 app.mount("/static", StaticFiles(directory="./static"), name="static")
 
-# pipeline = None
-pipeline = Pipeline(os.path.join(os.getcwd(), 'corpus'))
+pipeline = Pipeline(os.path.join(os.getcwd(), 'corpus2'))
 pipeline.start()
+
 
 @app.get("/", response_class=FileResponse)
 def read_index(request: Request):
     path = 'static/index.html'
     return FileResponse(path)
 
+
 @app.get("/query")
 def query_docs(value: str = ""):
-    print(value)
-    if not pipeline:
-        print("Null")
-    else:
-        print("NOT NULL")
-        pipeline.process_query(value)
-        file_paths = pipeline.retrive_docs()
-        s = pipeline.get_subjects(file_paths)
-        # print(s)
-        response =  pipeline.make_response(file_paths,s)
+    pipeline.process_query(value)
 
-        return response
+    file_paths_and_ids = pipeline.retrive_id_docs()
+    s = pipeline.get_subjects(file_paths_and_ids)
+    response = pipeline.make_response(file_paths_and_ids, s)
+
+    return response
+
+
+@app.get("/document/id/{id}")
+def read_file(id: str):
+    return pipeline.retrive_doc(id)
