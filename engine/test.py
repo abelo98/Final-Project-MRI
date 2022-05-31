@@ -1,3 +1,4 @@
+from uuid import UUID
 from pipeline import Pipeline
 
 MY_CORPUS = '/media/abelo/TERA/School/5to/SRI/Proyecto Final SRI/engine/corpus2'
@@ -12,7 +13,8 @@ def main():
 
     s = pipeline.get_subjects(file_paths_and_ids)
     response =  pipeline.make_response(file_paths_and_ids,s)
-    print(s)
+    txt = pipeline.retrive_doc(UUID('2e13dab8-5d7a-43cb-af22-bbfae7adaa4f'))
+    print(txt)
     return response
 
 if __name__ == '__main__':

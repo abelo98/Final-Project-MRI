@@ -79,9 +79,8 @@ class Pipeline:
 
         for i in range(len(file_paths_id)):
             body.append({
-                "path": file_paths_id[i][0],
                 "subject": subjects[i],
-                "id": file_paths_id[i][1]
+                "id": file_paths_id[i][0]
             })
 
         return body
