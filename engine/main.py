@@ -32,12 +32,13 @@ def read_index(request: Request):
     path = 'static/index.html'
     return FileResponse(path)
 
+
 @app.get("/query")
 def query_docs(value: str = ""):
     pipeline.process_query(value)
     return pipeline.retrive_docs()
 
 
-@app.get("/readfile")
+@app.get("/document")
 def read_file(id: str):
-    pass
+    return pipeline.retrive_doc(id)
