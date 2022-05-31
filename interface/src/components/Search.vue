@@ -70,16 +70,18 @@ export default {
       this.loading = true
       console.log(value)
       try {
-        // const data = await fetch(`http://127.0.0.1:8000/query?value=${value}`);
-        // let body = JSON.parse(await data.text());
+        const data = await fetch(`http://127.0.0.1:8000/query?value=${value}`);
+        let body = JSON.parse(await data.text());
 
-        this.documents = [
-          {
-            id: '1',
-            subject: 'Subject 1'
-          }
-        ];
+        this.documents = body;
 
+        //   this.documents = [
+        //     {
+        //       id: '1',
+        //       subject: 'Subject 1'
+        //     }
+        //   ];
+        //
       } catch (err) {
         console.log(err);
       }
