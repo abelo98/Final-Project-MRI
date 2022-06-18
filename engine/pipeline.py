@@ -83,16 +83,15 @@ class Pipeline:
 
     def __save_to_disk(self, file_name, struct):
         try:
-            saved_struct = open(file_name, 'wb')
-            pickle.dump(struct, saved_struct)
-            saved_struct.close()
-
+            with open(f'tables/{file_name}', 'wb') as f:
+                pickle.dump(struct, f)
+                f.close()
         except:
             print("Something went wrong saving to disk")
 
     def __retrive_from_disk(self, file_name):
-        tf_docs_file = open(os.path.join(os.getcwd(),file_name), 'rb')
-        return pickle.load(tf_docs_file)
+        with open(os.path.join(os.getcwd(),f'tables/{file_name}'), 'rb') as tf_docs_file:
+            return pickle.load(tf_docs_file)
 
     def retrive_doc(self, id):
         return self.cl.get_text(self.vsm.docs_id[id])
