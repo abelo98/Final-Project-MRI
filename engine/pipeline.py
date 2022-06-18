@@ -1,11 +1,12 @@
-from os import listdir
 import os
-from os.path import join, isfile
-import re
-from irm import Vector_Space_Model
-from text_processor import Cleaner
 import pickle
 import uuid
+from os import listdir
+from os.path import join, isfile
+from typing import List, Dict, Tuple
+
+from irm import Vector_Space_Model
+from text_processor import Cleaner
 
 TF_DOCS_FILE = "tf_doc_table"
 IDF_FILE = "idf_table"
@@ -40,10 +41,11 @@ class Pipeline:
 
     def __start_search_engine_indexing(self):
         try:
-            self.vsm.idf = self.__retrive_from_disk(IDF_FILE)
-            self.vsm.doc_wights = self.__retrive_from_disk(DOCS_W)
-            self.vsm.doc_norm = self.__retrive_from_disk(NORM_DOCS)
-            self.vsm.docs_id = self.__retrive_from_disk(DOCS_IDS)
+            self.vsm.doc_tf = self.__retrieve_from_disk(TF_DOCS_FILE)
+            self.vsm.idf = self.__retrieve_from_disk(IDF_FILE)
+            self.vsm.doc_wights = self.__retrieve_from_disk(DOCS_W)
+            self.vsm.doc_norm = self.__retrieve_from_disk(NORM_DOCS)
+            self.vsm.docs_id = self.__retrieve_from_disk(DOCS_IDS)
         except:
             for dj, file in self.vsm.docs_id.items():
                 plain_text = self.cl.get_text(file)
@@ -53,7 +55,7 @@ class Pipeline:
             self.vsm.calc_idf()
             self.vsm.calc_weights()
 
-            # self.__save_to_disk(TF_DOCS_FILE,self.vsm.doc_tf)
+            self.__save_to_disk(TF_DOCS_FILE, self.vsm.doc_tf)
             self.__save_to_disk(IDF_FILE, self.vsm.idf)
             self.__save_to_disk(DOCS_W, self.vsm.doc_wights)
             self.__save_to_disk(NORM_DOCS, self.vsm.doc_norm)
@@ -62,15 +64,16 @@ class Pipeline:
     def process_query(self, query, alpha=0.5):
         q = self.cl.doc_to_tokens(query)
         q_tf = self.vsm.calc_query_tf(q)
-        return self.vsm.calc_query_weights(alpha,q_tf)
+        return self.vsm.calc_query_weights(alpha, q_tf)
 
-    def retrive_id_docs(self, q_weights ,threshold=10):
-        return self.vsm.retrive_ids(threshold,q_weights)
+    def retrieve_id_docs(self, q_weights, threshold=10):
+        return self.vsm.retrieve_ids(threshold, q_weights)
 
     def get_subjects(self, path_and_ids):
         return self.cl.get_subjects(path_and_ids)
 
-    def make_response(self, file_paths_id, subjects):
+    @staticmethod
+    def make_response(file_paths_id, subjects):
         body = []
 
         for i in range(len(file_paths_id)):
@@ -81,7 +84,8 @@ class Pipeline:
 
         return body
 
-    def __save_to_disk(self, file_name, struct):
+    @staticmethod
+    def __save_to_disk(file_name, struct):
         try:
             with open(f'tables/{file_name}', 'wb') as f:
                 pickle.dump(struct, f)
@@ -89,9 +93,36 @@ class Pipeline:
         except:
             print("Something went wrong saving to disk")
 
-    def __retrive_from_disk(self, file_name):
-        with open(os.path.join(os.getcwd(),f'tables/{file_name}'), 'rb') as tf_docs_file:
+    @staticmethod
+    def __retrieve_from_disk(file_name):
+        with open(os.path.join(os.getcwd(), f'tables/{file_name}'), 'rb') as tf_docs_file:
             return pickle.load(tf_docs_file)
 
-    def retrive_doc(self, id):
+    def retrieve_doc(self, id):
         return self.cl.get_text(self.vsm.docs_id[id])
+
+    def boolean_model_retrieve_docs(self, query: str) -> List[object]:
+        """
+        :param query:
+        :return: List UUID => ids docs retrieves
+        """
+
+        tf: Dict[Tuple[str, object], float] = self.vsm.doc_tf
+        keys: list[Tuple[str, object]] = tf.keys()  # termino, id_doc
+
+        query_tokens: List[str] = list(set(self.cl.doc_to_tokens(query)))
+
+        ans = []
+
+        for t in query_tokens:
+            temp = [id_doc for (ter, id_doc) in keys if ter == t]
+
+            if len(ans) == 0:
+                ans = temp.copy()
+
+            ans = list(set(temp) & set(ans))
+
+            if ans is None or len(ans) == 0:
+                break
+
+        return ans
