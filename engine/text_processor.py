@@ -1,27 +1,25 @@
-import re
 import string
-from nltk.tokenize import word_tokenize
-from nltk.stem.porter import PorterStemmer
+
 from nltk import *
 from nltk.corpus import stopwords
 
 
 class Cleaner:
-    def __init__(self,path) -> None:
+    def __init__(self, path) -> None:
         self.corpus_path = path
 
-    def get_text(self,path_file):
+    def get_text(self, path_file):
         with open(path_file, encoding='utf8', errors='ignore') as file:
             plain_text = file.read()
             file.close()
             return plain_text
 
-    def __remove_reg(self,tokens):
+    def __remove_reg(self, tokens):
         re_punc = re.compile('[%s]' % re.escape(string.punctuation))
         stripped = [re_punc.sub('', w) for w in tokens]
         return stripped
 
-    def doc_to_tokens(self,plain_text):
+    def doc_to_tokens(self, plain_text):
         plain_text = re.sub('from:(.*\n)', '', plain_text)
         plain_text = re.sub('[\w]+[\._]?[\w]+[@]+[\w.]+', '', plain_text)
         plain_text = re.sub('Subject:|subject:', '', plain_text)
@@ -40,14 +38,14 @@ class Cleaner:
         tokens = [porter.stem(word) for word in tokens]
         return tokens
 
-    def get_subjects(self,file_paths):
+    def get_subjects(self, file_paths):
         subj = []
-        for _,fp in file_paths:
+        for _, fp in file_paths:
             file = self.get_text(fp)
             subject = re.findall('Subject:[^\n]*', file)
             if subject:
-                subject = subject[0].replace('Subject:','')
-                subject = subject.replace('Re:','')
+                subject = subject[0].replace('Subject:', '')
+                subject = subject.replace('Re:', '')
                 subject = subject.strip()
             else:
                 subject = fp

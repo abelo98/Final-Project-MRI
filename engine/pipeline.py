@@ -125,4 +125,4 @@ class Pipeline:
             if ans is None or len(ans) == 0:
                 break
 
-        return ans
+        return [(id_doc, self.vsm.docs_id[id_doc]) for id_doc in ans]
