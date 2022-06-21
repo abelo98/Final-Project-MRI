@@ -1,7 +1,7 @@
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse, FileResponse, HTMLResponse
-from pipeline import Pipeline
+from core import Core
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from uuid import UUID
@@ -24,7 +24,7 @@ app.add_middleware(
 
 app.mount("/static", StaticFiles(directory="./static"), name="static")
 
-pipeline = Pipeline(os.path.join(os.getcwd(), 'corpus'))
+pipeline = Core(os.path.join(os.getcwd(), 'corpus'))
 pipeline.start()
 
 
