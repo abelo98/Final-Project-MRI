@@ -91,6 +91,18 @@ class VectorialModel:
 
         id_docs_relevant, id_docs_no_relevant = feed
 
-        # TODO: apply formule => hay que retornar algo que tenga la misma estructura que query_weight
+        for dj in id_docs_no_relevant:
+            for t in query_weight:
+                try:
+                    query_weight[t] -= self.doc_weights[t, dj] * (.5 / len(id_docs_no_relevant))
+                except KeyError:
+                    pass
 
-        return query_weight  # remove this line and return new query weight
+        for dj in id_docs_relevant:
+            for t in query_weight:
+                try:
+                    query_weight[t] += self.doc_weights[t, dj] * (1 / len(id_docs_relevant))
+                except KeyError:
+                    pass
+
+        return query_weight
