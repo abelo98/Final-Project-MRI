@@ -43,9 +43,7 @@ class VectorialModel:
 
             query_wights[t] = (alpha + (1 - alpha) * query_tf[t]) * idf
 
-        # TODO: call get_feedback
-
-        return query_wights
+        return self.get_feedback(query_wights, self.tokens_query)
 
     def similarity(self, threshold, query_wights):
         sim = {}
@@ -91,6 +89,8 @@ class VectorialModel:
         if feed is None:
             return None
 
-        relevant, no_relevant = feed
+        id_docs_relevant, id_docs_no_relevant = feed
 
-        # TODO: apply formule
+        # TODO: apply formule => hay que retornar algo que tenga la misma estructura que query_weight
+
+        return query_weight  # remove this line and return new query weight
