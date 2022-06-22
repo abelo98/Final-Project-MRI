@@ -39,7 +39,7 @@ class Core:
     def start(self):
         self.cl = Cleaner(self.corpus_path)
         self.files = self.__scan_corpus(self.corpus_path)
-        self.docs_id = {uuid.uuid4(): f for f in self.files}
+        self.docs_id = {i: f for i,f in enumerate(self.files)}
 
     def start_search_engine_indexing(self):
         try:

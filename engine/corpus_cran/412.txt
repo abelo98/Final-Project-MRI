@@ -1,0 +1,3 @@
+Subject: critical combinations of shear and transverse direct
+stress for an infinitely long flat plate with
+edges elastically restrained against rotation .

@@ -5,7 +5,7 @@ from nltk.corpus import stopwords
 
 
 class Cleaner:
-    def __init__(self, path) -> None:
+    def __init__(self, path) -> None:## Esto no hace falta
         self.corpus_path = path
 
     def get_text(self, path_file):

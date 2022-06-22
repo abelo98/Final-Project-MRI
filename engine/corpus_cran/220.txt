@@ -1,0 +1,2 @@
+Subject: a general purpose analogue correlator for the analysis of
+random noise signals .
