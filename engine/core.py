@@ -1,7 +1,6 @@
 import math
 import os
 import pickle
-import uuid
 from os import listdir
 from os.path import join, isfile
 from typing import List, Dict, Any
@@ -10,6 +9,7 @@ import numpy as np
 
 from boolean_model import BooleanModel
 from constants import *
+from feedback import Feedback
 from text_processor import Cleaner
 from vectorial_model import VectorialModel
 
@@ -19,6 +19,7 @@ class Core:
         self.corpus_path = corpus_path
         self.files: List[str] = []
 
+        self.feedback: Feedback = Feedback()
         self.cl: Cleaner = None
         self.vsm: VectorialModel = None
         self.boolean_model: BooleanModel = None
@@ -39,7 +40,7 @@ class Core:
     def start(self):
         self.cl = Cleaner(self.corpus_path)
         self.files = self.__scan_corpus(self.corpus_path)
-        self.docs_id = {i: f for i,f in enumerate(self.files)}
+        self.docs_id = {i: f for i, f in enumerate(self.files)}
 
     def start_search_engine_indexing(self):
         try:
@@ -62,6 +63,9 @@ class Core:
             Core.save_to_disk(DOCS_W, self.doc_wights)
             Core.save_to_disk(NORM_DOCS, self.doc_norm)
             Core.save_to_disk(DOCS_IDS, self.docs_id)
+
+    def set_feedback(self, _type, doc_id, query):
+        self.vsm.set_feedback(_type, doc_id, query)
 
     def __calc_tf(self, tokens, dj):
         aux = {}
@@ -102,7 +106,8 @@ class Core:
             invert_index=self.invert_index,
             docs_id=self.docs_id,
             idf=self.idf,
-            cl=self.cl)
+            cl=self.cl,
+            feedback=self.feedback)
 
     def load_boolean_model(self):
         self.boolean_model = BooleanModel(
