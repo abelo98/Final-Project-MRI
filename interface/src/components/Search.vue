@@ -6,6 +6,7 @@
     <div class="header">
       <img :src="logo" @click="goToHome" style="cursor: pointer"/>
       <SearchInput ref="searchInput" from-search @submit="onSubmit"/>
+      <input style="margin-left: 20px" type="checkbox" v-model="vectorialModel"> Use Vectorial Model
     </div>
     <div class="body">
       <div v-for="doc in documents" :key="doc.id" class="document-retrieve">
@@ -50,6 +51,7 @@ export default {
       likeImg: require("@/assets/like.svg"),
       dislikeImg: require("@/assets/dislike.svg"),
       documents: [],
+      vectorialModel: true
     };
   },
   mounted() {
@@ -67,23 +69,19 @@ export default {
       this.getDocuments(value);
     },
     async getDocuments(value) {
-      this.loading = true
-      console.log(value)
+      this.loading = true;
       try {
-        const data = await fetch(`http://127.0.0.1:8000/query?value=${value}`);
-        let body = JSON.parse(await data.text());
 
+        const url = this.vectorialModel
+            ? `http://127.0.0.1:8000/vect/query?value=${value}`
+            : `http://127.0.0.1:8000/bool/query?value=${value}`;
+
+        const data = await fetch(url);
+        let body = JSON.parse(await data.text());
         this.documents = body;
 
-        //   this.documents = [
-        //     {
-        //       id: '1',
-        //       subject: 'Subject 1'
-        //     }
-        //   ];
-        //
       } catch (err) {
-        console.log(err);
+        console.log(`Error ${err}`);
       }
       this.loading = false
     }
@@ -93,7 +91,8 @@ export default {
         let headers = new Headers()
         headers.append("Content-type", "application/json")
         let body = JSON.stringify({
-          feedback: value
+          type: value,
+          query: ""
         });
         const data = await fetch(`http://127.0.0.1:8000/feedback/${docId}`, {
           method: "PUT",
