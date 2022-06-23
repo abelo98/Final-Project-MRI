@@ -54,63 +54,63 @@ class Cleaner:
         return subj
 
 
-c = Cleaner('lsl')
-tokens2 = c.doc_to_tokens('''theory of aircraft structural models subjected to aerodynamic
-heating and external loads .
-  the problem of investigating the simultaneous effects of transient
-aerodynamic heating and external loads on aircraft structures for the
-purpose of determining the ability of the structure to withstand flight
-to supersonic speeds is studied .  by dimensional analyses it is shown
-that ..
-constructed of the same materials as the aircraft will be thermally
-similar to the aircraft with respect to
-the flow of heat through the structure
-will be similar to those of the aircraft when the structural model is
-constructed at the same temperature as the aircraft .
-external loads will be similar to those of the aircraft .
-subjected to heating and cooling that correctly simulate the aerodynamic
-heating of the aircraft, except with respect to angular velocities and
-angular accelerations, without requiring determination of the heat flux
-at each point on the surface and its variation with time .
-acting on the aerodynamically heated structural model to those acting
-on the aircraft is determined for the case of zero angular velocity and
-zero angular acceleration, so that the structural model may be subjected
-to the external loads required for simultaneous simulation of stresses
-and deformations due to external loads .''')
+# c = Cleaner('lsl')
+# tokens2 = c.doc_to_tokens('''theory of aircraft structural models subjected to aerodynamic
+# heating and external loads .
+#   the problem of investigating the simultaneous effects of transient
+# aerodynamic heating and external loads on aircraft structures for the
+# purpose of determining the ability of the structure to withstand flight
+# to supersonic speeds is studied .  by dimensional analyses it is shown
+# that ..
+# constructed of the same materials as the aircraft will be thermally
+# similar to the aircraft with respect to
+# the flow of heat through the structure
+# will be similar to those of the aircraft when the structural model is
+# constructed at the same temperature as the aircraft .
+# external loads will be similar to those of the aircraft .
+# subjected to heating and cooling that correctly simulate the aerodynamic
+# heating of the aircraft, except with respect to angular velocities and
+# angular accelerations, without requiring determination of the heat flux
+# at each point on the surface and its variation with time .
+# acting on the aerodynamically heated structural model to those acting
+# on the aircraft is determined for the case of zero angular velocity and
+# zero angular acceleration, so that the structural model may be subjected
+# to the external loads required for simultaneous simulation of stresses
+# and deformations due to external loads .''')
 
-tokens1 = c.doc_to_tokens('''what similarity laws must be obeyed when constructing aeroelastic models
-of heated high speed aircraft .''')
+# tokens1 = c.doc_to_tokens('''what similarity laws must be obeyed when constructing aeroelastic models
+# of heated high speed aircraft .''')
 
-tokens3 = c.doc_to_tokens('''scale models for thermo-aeroelastic research .
-  an investigation is made of the
-parameters to be satisfied for
-thermo-aeroelastic similarity .  it is concluded
-that complete similarity obtains
-only when aircraft and model are identical
-in all respects, including size .
-  by limiting consideration to
-conduction effects, by assuming the major
-load carrying parts of the structure
-are in regions where the flow is either
-entirely laminar, or entirely turbulent,
-and by assuming a specific
-relationship between reynolds number and nusselt
-number, an approach to similarity can
-be achieved for small scale models .
-experimental and analytical work is
-required to check on the validity of these assumptions .
-  it appears that existing hot wind
-tunnels will not be completely
-adequate for thermo-aeroelastic work, and
-accordingly a possible layout for
-the type of tunnel required is described .
-automatic programmed control of
-the tunnel would appear to be necessary .''')
-
-
-equal_toks1 = set(tokens1).intersection(set(tokens2))
-equal_toks2 = set(tokens1).intersection(set(tokens3))
+# tokens3 = c.doc_to_tokens('''scale models for thermo-aeroelastic research .
+#   an investigation is made of the
+# parameters to be satisfied for
+# thermo-aeroelastic similarity .  it is concluded
+# that complete similarity obtains
+# only when aircraft and model are identical
+# in all respects, including size .
+#   by limiting consideration to
+# conduction effects, by assuming the major
+# load carrying parts of the structure
+# are in regions where the flow is either
+# entirely laminar, or entirely turbulent,
+# and by assuming a specific
+# relationship between reynolds number and nusselt
+# number, an approach to similarity can
+# be achieved for small scale models .
+# experimental and analytical work is
+# required to check on the validity of these assumptions .
+#   it appears that existing hot wind
+# tunnels will not be completely
+# adequate for thermo-aeroelastic work, and
+# accordingly a possible layout for
+# the type of tunnel required is described .
+# automatic programmed control of
+# the tunnel would appear to be necessary .''')
 
 
-print(equal_toks1)
-print(equal_toks2)
+# equal_toks1 = set(tokens1).intersection(set(tokens2))
+# equal_toks2 = set(tokens1).intersection(set(tokens3))
+
+
+# print(equal_toks1)
+# print(equal_toks2)
