@@ -29,7 +29,7 @@ def process_med(article):
 def save_corpus(docs,directory):
     try:
         for i,doc in enumerate(docs.values()):
-            filename = f'{directory}/{i+1}.txt'
+            filename = f'{directory}/{i+1}'
             os.makedirs(os.path.dirname(filename), exist_ok=True)
             with open(filename, "w") as f:
                 if len(doc) == 1:

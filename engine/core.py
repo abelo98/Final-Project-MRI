@@ -40,7 +40,7 @@ class Core:
     def start(self):
         self.cl = Cleaner(self.corpus_path)
         self.files = self.__scan_corpus(self.corpus_path)
-        self.docs_id = {i: f for i, f in enumerate(self.files)}
+        self.docs_id = {i+1: f for i, f in enumerate(self.files)}
 
     def start_search_engine_indexing(self):
         try:
@@ -68,6 +68,7 @@ class Core:
         self.vsm.set_feedback(_type, doc_id, query)
 
     def __calc_tf(self, tokens, dj):
+        
         aux = {}
         for t in tokens:
             try:
@@ -116,7 +117,7 @@ class Core:
             docs_ids=self.docs_id)
 
     def __scan_corpus(self, path) -> List[str]:
-        directories = listdir(path)
+        directories = sorted(listdir(path),key=lambda e:int(e))
         files_found = []
         for e in directories:
             file_path = join(path, e)
@@ -144,7 +145,9 @@ class Core:
     @staticmethod
     def save_to_disk(file_name, struct):
         try:
-            with open(f'tables/{file_name}', 'wb') as f:
+            file_name = f'tables/'+file_name
+            os.makedirs(os.path.dirname(file_name), exist_ok=True)
+            with open(file_name, 'wb') as f:
                 pickle.dump(struct, f)
                 f.close()
         except:

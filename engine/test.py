@@ -6,6 +6,8 @@ from core import Core
 BASE_PATH = os.getcwd()
 
 MY_CORPUS = f'{BASE_PATH}/corpus2'
+CRAN_CORPUS = f'{BASE_PATH}/corpus_cran'
+MED_CORPUS = f'{BASE_PATH}/corpus_med'
 REAL_CORPUS = f'{BASE_PATH}/corpus'
 OTHER = f'{BASE_PATH}/corpus/rec.autos'
 
@@ -20,10 +22,10 @@ def process_boolean_model(core: Core) -> List[Dict[str, Any]]:
     return response
 
 
-def process_vectorial_model(core: Core) -> List[Dict[str, Any]]:
+def process_vectorial_model(core: Core, query:str) -> List[Dict[str, Any]]:
     core.load_vectorial_model()
 
-    query_process = core.vsm.process_query("lion fox")
+    query_process = core.vsm.process_query(query)
     file_paths_and_ids_vectorial_model = core.vsm.retrieve_id_docs(query_process)
 
     subjects = core.get_subjects(file_paths_and_ids_vectorial_model)
@@ -34,13 +36,18 @@ def process_vectorial_model(core: Core) -> List[Dict[str, Any]]:
 
 
 def main():
-    core = Core(MY_CORPUS)
+    core = Core(CRAN_CORPUS)
 
     # boolean model
     # print(process_boolean_model(core))
 
     # vectorial model
-    print(process_vectorial_model(core))
+    q = "what similarity laws must be obeyed when constructing aeroelastic models\
+    of heated high speed aircraft"
+    response = process_vectorial_model(core,q)
+    for e in response:
+        if e['id'] in [184,29 ,31  ,12  ,51   ,102   ,13   ,14   ,15  ,57  ,378  ,859  ,185  ,30  , 37 , 52  , 142  , 195  , 875  , 56  , 66  , 95  , 462  ,497  , 858, 876, 879, 880,  486]:
+            print(e['id'])
 
 
 if __name__ == '__main__':

@@ -48,13 +48,14 @@ class VectorialModel:
     def similarity(self, threshold, query_wights):
         sim = {}
         for dj in self.docs_id:
+            if dj == 184 or dj == 51:
+                print("aki")
             vect_prod = 0
             for t in query_wights:
                 try:
                     vect_prod += self.doc_weights[t, dj] * query_wights[t]
                 except KeyError:
                     pass
-
             norm_d = self.doc_norm[dj]
             norm_q = np.linalg.norm(list(query_wights.values()))
             norm_p = norm_d * norm_q
@@ -74,7 +75,7 @@ class VectorialModel:
         q_tf = self.calc_query_tf(q)
         return self.calc_query_weights(alpha, q_tf)
 
-    def retrieve_id_docs(self, q_weights, threshold=10):
+    def retrieve_id_docs(self, q_weights, threshold=30):
         return self.retrieve_ids(threshold, q_weights)
 
     def set_feedback(self, _type, doc_id, query: List[str] = None):
@@ -87,7 +88,7 @@ class VectorialModel:
         feed = self.feedback.get_feedback(query)
 
         if feed is None:
-            return None
+            return query_weight
 
         id_docs_relevant, id_docs_no_relevant = feed
 
