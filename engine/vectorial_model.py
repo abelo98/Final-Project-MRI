@@ -87,7 +87,7 @@ class VectorialModel:
         feed = self.feedback.get_feedback(query)
 
         if feed is None:
-            return None
+            return query_weight
 
         id_docs_relevant, id_docs_no_relevant = feed
 
