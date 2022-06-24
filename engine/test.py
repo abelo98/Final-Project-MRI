@@ -29,7 +29,7 @@ def process_vectorial_model(core: Core, query: str) -> List[Dict[str, Any]]:
     return response
 
 
-def process_vectorial_model_test_feedback(core: Core, query: str) -> List[Dict[str, Any]]:
+def process_vectorial_model_test_feedback(core: Core, query: str) -> None:
     core.vsm.process_query(query)
 
 

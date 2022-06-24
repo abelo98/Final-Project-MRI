@@ -28,9 +28,6 @@ app.mount("/static", StaticFiles(directory="./static"), name="static")
 core = Core(CRAN_CORPUS)
 
 
-# core.start()
-
-
 @app.get("/", response_class=FileResponse)
 def read_index(request: Request):
     path = 'static/index.html'
@@ -38,8 +35,8 @@ def read_index(request: Request):
 
 
 @app.get("/vect/query")
-def query_vect_docs(value: str = ""):
-    core.load_vectorial_model()
+def query_vect_docs(value: str = "", corpus: str = "CRAN CORPUS"):
+    core.load_vectorial_model(Core.process_corpus_name(corpus))
 
     q_w = core.vsm.process_query(value)
     file_paths_and_ids = core.vsm.retrieve_id_docs(q_w)
@@ -50,8 +47,8 @@ def query_vect_docs(value: str = ""):
 
 
 @app.get("/bool/query")
-def query_bool_docs(value: str = ""):
-    core.load_boolean_model()
+def query_bool_docs(value: str = "", corpus: str = "CRAN CORPUS"):
+    core.load_boolean_model(Core.process_corpus_name(corpus))
 
     file_paths_and_ids_boolean = core.boolean_model.boolean_model_retrieve_docs(value)
     subjects = core.get_subjects(file_paths_and_ids_boolean)
