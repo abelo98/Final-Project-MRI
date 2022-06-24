@@ -67,8 +67,10 @@ class Core:
     def set_feedback(self, _type, doc_id, query):
         self.vsm.set_feedback(_type, doc_id, query)
 
+    # def __calc_tf_skl(self,docs):
+
+
     def __calc_tf(self, tokens, dj):
-        
         aux = {}
         for t in tokens:
             try:
@@ -97,6 +99,17 @@ class Core:
                     pass
         for dj in self.docs_id:
             self.doc_norm[dj] = np.linalg.norm([self.doc_wights[k] for k in self.doc_wights if k[1] == dj])
+
+    # def __calc_weights_norm(self):
+    #     for t in self.invert_index:
+    #         for d in self.docs_id:
+    #             try:
+    #                 self.doc_wights[t, d] = self.doc_tf[t, d] * self.idf[t]
+    #                 for _ in 
+    #             except KeyError:
+    #                 pass
+    #     for dj in self.docs_id:
+    #         self.doc_norm[dj] = np.linalg.norm([self.doc_wights[k] for k in self.doc_wights if k[1] == dj])
 
     def load_vectorial_model(self):
         self.vsm = VectorialModel(
@@ -160,3 +173,24 @@ class Core:
 
     def retrieve_doc(self, doc_id):
         return self.cl.get_text(self.vsm.docs_id[doc_id])
+
+    def recoverd_docs(self,retrived_docs:dict,relevant_docs:list):
+        rr = 0
+        nr = 0
+        for dicc in retrived_docs:
+            if dicc['id'] in relevant_docs:
+                rr += 1
+            else:
+                nr += 1
+        return rr, nr
+
+    
+    def precision(self,retrived_docs:dict,relevant_docs:list):
+        rr,nr = self.recoverd_docs(retrived_docs,relevant_docs)
+        return (rr/(rr+nr)) * 100
+
+    def recall(self,retrived_docs:dict,relevant_docs:set):
+        rr,_ = self.recoverd_docs(retrived_docs,relevant_docs)
+        rn = abs(len(relevant_docs) - rr)
+        return (rr/(rr+rn)) * 100
+        

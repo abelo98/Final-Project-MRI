@@ -45,9 +45,9 @@ def main():
     q = "what similarity laws must be obeyed when constructing aeroelastic models\
     of heated high speed aircraft"
     response = process_vectorial_model(core,q)
-    for e in response:
-        if e['id'] in [184,29 ,31  ,12  ,51   ,102   ,13   ,14   ,15  ,57  ,378  ,859  ,185  ,30  , 37 , 52  , 142  , 195  , 875  , 56  , 66  , 95  , 462  ,497  , 858, 876, 879, 880,  486]:
-            print(e['id'])
+    r = [184,29 ,31  ,12  ,51   ,102   ,13   ,14   ,15  ,57  ,378  ,859  ,185  ,30  , 37 , 52  , 142  , 195  , 875  , 56  , 66  , 95  , 462  ,497  , 858, 876, 879, 880,  486]
+    print('precision: ',core.precision(response,r))
+    print('recall: ',core.recall(response,r))
 
 
 if __name__ == '__main__':

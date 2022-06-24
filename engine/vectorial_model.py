@@ -48,8 +48,6 @@ class VectorialModel:
     def similarity(self, threshold, query_wights):
         sim = {}
         for dj in self.docs_id:
-            if dj == 184 or dj == 51:
-                print("aki")
             vect_prod = 0
             for t in query_wights:
                 try:
@@ -75,7 +73,7 @@ class VectorialModel:
         q_tf = self.calc_query_tf(q)
         return self.calc_query_weights(alpha, q_tf)
 
-    def retrieve_id_docs(self, q_weights, threshold=30):
+    def retrieve_id_docs(self, q_weights, threshold=10):
         return self.retrieve_ids(threshold, q_weights)
 
     def set_feedback(self, _type, doc_id, query: List[str] = None):
