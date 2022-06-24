@@ -43,6 +43,8 @@ class Core:
         self.corpus_name = corpus_name
         self.files: List[str] = []
 
+        self.feedback: Feedback = Feedback()
+
         self.cl: Cleaner = None
         self.vsm: VectorialModel = None
         self.boolean_model: BooleanModel = None
