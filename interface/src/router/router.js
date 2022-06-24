@@ -13,7 +13,7 @@ const routes = [
     component: Home,
   },
   {
-    path: "/search",
+    path: "/search/:corpus",
     name: "search",
     component: Search,
   },
