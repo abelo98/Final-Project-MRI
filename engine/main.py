@@ -1,12 +1,10 @@
-import os
-from uuid import UUID
-
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+from constants import *
 from core import Core
 
 
@@ -27,8 +25,10 @@ app.add_middleware(
 
 app.mount("/static", StaticFiles(directory="./static"), name="static")
 
-core = Core(os.path.join(os.getcwd(), 'corpus'))
-core.start()
+core = Core(CRAN_CORPUS)
+
+
+# core.start()
 
 
 @app.get("/", response_class=FileResponse)
@@ -62,9 +62,9 @@ def query_bool_docs(value: str = ""):
 
 @app.get("/document/id/{id}")
 def read_file(id: str):
-    return core.retrieve_doc(UUID(id))
+    return core.retrieve_doc(id)
 
 
 @app.put("/feedback/{doc_id}")
 def feedback(doc_id: int, body: FeedbackBody):
-    return core.set_feedback(body.type, doc_id, body.query)
+    return core.set_feedback(body.type, doc_id, None)

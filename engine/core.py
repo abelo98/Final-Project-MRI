@@ -1,5 +1,4 @@
 import math
-import os
 import pickle
 from os import listdir
 from os.path import join, isfile
@@ -40,7 +39,7 @@ class Core:
     def start(self):
         self.cl = Cleaner(self.corpus_path)
         self.files = self.__scan_corpus(self.corpus_path)
-        self.docs_id = {i+1: f for i, f in enumerate(self.files)}
+        self.docs_id = {i + 1: f for i, f in enumerate(self.files)}
 
     def start_search_engine_indexing(self):
         try:
@@ -66,9 +65,6 @@ class Core:
 
     def set_feedback(self, _type, doc_id, query):
         self.vsm.set_feedback(_type, doc_id, query)
-
-    # def __calc_tf_skl(self,docs):
-
 
     def __calc_tf(self, tokens, dj):
         aux = {}
@@ -130,7 +126,7 @@ class Core:
             docs_ids=self.docs_id)
 
     def __scan_corpus(self, path) -> List[str]:
-        directories = sorted(listdir(path),key=lambda e:int(e))
+        directories = sorted(listdir(path), key=lambda e: int(e))
         files_found = []
         for e in directories:
             file_path = join(path, e)
@@ -158,7 +154,7 @@ class Core:
     @staticmethod
     def save_to_disk(file_name, struct):
         try:
-            file_name = f'tables/'+file_name
+            file_name = f'tables/' + file_name
             os.makedirs(os.path.dirname(file_name), exist_ok=True)
             with open(file_name, 'wb') as f:
                 pickle.dump(struct, f)
@@ -172,9 +168,9 @@ class Core:
             return pickle.load(tf_docs_file)
 
     def retrieve_doc(self, doc_id):
-        return self.cl.get_text(self.vsm.docs_id[doc_id])
+        return self.cl.get_text(self.docs_id[int(doc_id)])
 
-    def recoverd_docs(self,retrived_docs:dict,relevant_docs:list):
+    def recoverd_docs(self, retrived_docs: dict, relevant_docs: list):
         rr = 0
         nr = 0
         for dicc in retrived_docs:
@@ -184,13 +180,11 @@ class Core:
                 nr += 1
         return rr, nr
 
-    
-    def precision(self,retrived_docs:dict,relevant_docs:list):
-        rr,nr = self.recoverd_docs(retrived_docs,relevant_docs)
-        return (rr/(rr+nr)) * 100
+    def precision(self, retrived_docs: dict, relevant_docs: list):
+        rr, nr = self.recoverd_docs(retrived_docs, relevant_docs)
+        return (rr / (rr + nr)) * 100
 
-    def recall(self,retrived_docs:dict,relevant_docs:set):
-        rr,_ = self.recoverd_docs(retrived_docs,relevant_docs)
+    def recall(self, retrived_docs: dict, relevant_docs: set):
+        rr, _ = self.recoverd_docs(retrived_docs, relevant_docs)
         rn = abs(len(relevant_docs) - rr)
-        return (rr/(rr+rn)) * 100
-        
+        return (rr / (rr + rn)) * 100
