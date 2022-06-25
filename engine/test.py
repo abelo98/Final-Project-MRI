@@ -1,19 +1,7 @@
-import os
 from typing import List, Dict, Any
 
+from constants import *
 from core import Core
-
-BASE_PATH = os.getcwd()
-
-CRAN_QUERY_RESULT = f'{BASE_PATH}/queries_rel/cranqrel'
-MED_QUERY_RESULT = f'{BASE_PATH}/queries_rel/MED.REL'
-CRAN_QUERIES = f'{BASE_PATH}/queries_rel/cran.qry'
-MED_QUERIES = f'{BASE_PATH}/queries_rel/MED.QRY'
-MY_CORPUS = f'{BASE_PATH}/corpus2'
-CRAN_CORPUS = f'{BASE_PATH}/corpus_cran'
-MED_CORPUS = f'{BASE_PATH}/corpus_med'
-REAL_CORPUS = f'{BASE_PATH}/corpus'
-OTHER = f'{BASE_PATH}/corpus/rec.autos'
 
 
 def process_boolean_model(core: Core) -> List[Dict[str, Any]]:
@@ -26,7 +14,7 @@ def process_boolean_model(core: Core) -> List[Dict[str, Any]]:
     return response
 
 
-def process_vectorial_model(core: Core, query:str) -> List[Dict[str, Any]]:
+def process_vectorial_model(core: Core, query: str) -> List[Dict[str, Any]]:
     core.load_vectorial_model()
 
     query_process = core.vsm.process_query(query)
@@ -35,7 +23,9 @@ def process_vectorial_model(core: Core, query:str) -> List[Dict[str, Any]]:
     subjects = core.get_subjects(file_paths_and_ids_vectorial_model)
 
     response = core.make_response(file_paths_and_ids_vectorial_model, subjects)
-    
+
+    core.set_feedback(1, 51, None)
+
     return response
 
 def parse_query_rel(dir):
@@ -117,7 +107,12 @@ def run_tests(dir_results,dir_q,dir_corpus):
     print('mean f1 with expanded queries: ',f1_exp/total_q,'%')
 
 
+def process_vectorial_model_test_feedback(core: Core, query: str) -> None:
+    core.vsm.process_query(query)
+
+
 def main():
+<<<<<<< HEAD
     run_tests(CRAN_QUERY_RESULT,CRAN_QUERIES,CRAN_CORPUS)
 
     # core = Core(CRAN_CORPUS)
@@ -137,6 +132,24 @@ def main():
     # print('recall: ',core.recall(response,best[1]),'%')
     # print('f1: ',core.f1(response,best[1]),'%')
 
+=======
+    core = Core(CRAN_CORPUS)
+
+    # boolean model
+    # print(process_boolean_model(core))
+
+    # vectorial model
+    q = "what similarity laws must be obeyed when constructing aeroelastic models\
+    of heated high speed aircraft"
+    response = process_vectorial_model(core, q)
+    r = [184, 29, 31, 12, 51, 102, 13, 14, 15, 57, 378, 859, 185, 30, 37, 52, 142, 195, 875, 56, 66, 95, 462, 497, 858,
+         876, 879, 880, 486]
+    print('precision: ', core.precision(response, r))
+    print('recall: ', core.recall(response, r))
+    print(response)
+
+    process_vectorial_model_test_feedback(core, q)
+>>>>>>> 6276cc4031d4c314a35d17ca26470994c0cbd83e
 
 
 if __name__ == '__main__':

@@ -1,12 +1,10 @@
-import os
-from uuid import UUID
-
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+from constants import *
 from core import Core
 
 
@@ -27,8 +25,7 @@ app.add_middleware(
 
 app.mount("/static", StaticFiles(directory="./static"), name="static")
 
-core = Core(os.path.join(os.getcwd(), 'corpus'))
-core.start()
+core = Core(CRAN_CORPUS)
 
 
 @app.get("/", response_class=FileResponse)
@@ -38,8 +35,8 @@ def read_index(request: Request):
 
 
 @app.get("/vect/query")
-def query_vect_docs(value: str = ""):
-    core.load_vectorial_model()
+def query_vect_docs(value: str = "", corpus: str = "CRAN CORPUS"):
+    core.load_vectorial_model(Core.process_corpus_name(corpus))
 
     q_w = core.vsm.process_query(value)
     file_paths_and_ids = core.vsm.retrieve_id_docs(q_w)
@@ -50,8 +47,8 @@ def query_vect_docs(value: str = ""):
 
 
 @app.get("/bool/query")
-def query_bool_docs(value: str = ""):
-    core.load_boolean_model()
+def query_bool_docs(value: str = "", corpus: str = "CRAN CORPUS"):
+    core.load_boolean_model(Core.process_corpus_name(corpus))
 
     file_paths_and_ids_boolean = core.boolean_model.boolean_model_retrieve_docs(value)
     subjects = core.get_subjects(file_paths_and_ids_boolean)
@@ -62,9 +59,9 @@ def query_bool_docs(value: str = ""):
 
 @app.get("/document/id/{id}")
 def read_file(id: str):
-    return core.retrieve_doc(UUID(id))
+    return core.retrieve_doc(id)
 
 
 @app.put("/feedback/{doc_id}")
 def feedback(doc_id: int, body: FeedbackBody):
-    return core.set_feedback(body.type, doc_id, body.query)
+    return core.set_feedback(body.type, doc_id, None)

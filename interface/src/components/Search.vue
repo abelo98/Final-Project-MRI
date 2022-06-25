@@ -7,6 +7,11 @@
       <img :src="logo" @click="goToHome" style="cursor: pointer"/>
       <SearchInput ref="searchInput" from-search @submit="onSubmit"/>
       <input style="margin-left: 20px" type="checkbox" v-model="vectorialModel"> Use Vectorial Model
+
+      <v-select
+          style="margin-left:20px; border-radius: 1px"
+          v-model="selected"
+          :options="options"/>
     </div>
     <div class="body">
       <div v-for="doc in documents" :key="doc.id" class="document-retrieve">
@@ -51,7 +56,9 @@ export default {
       likeImg: require("@/assets/like.svg"),
       dislikeImg: require("@/assets/dislike.svg"),
       documents: [],
-      vectorialModel: true
+      vectorialModel: true,
+      options: ['CRAN CORPUS', 'MED CORPUS', '20NEWSGROUP CORPUS'],
+      selected: this.$route.params.corpus,
     };
   },
   mounted() {
@@ -73,8 +80,8 @@ export default {
       try {
 
         const url = this.vectorialModel
-            ? `http://127.0.0.1:8000/vect/query?value=${value}`
-            : `http://127.0.0.1:8000/bool/query?value=${value}`;
+            ? `http://127.0.0.1:8000/vect/query?value=${value}&corpus=${this.selected}`
+            : `http://127.0.0.1:8000/bool/query?value=${value}&corpus=${this.selected}`;
 
         const data = await fetch(url);
         let body = JSON.parse(await data.text());

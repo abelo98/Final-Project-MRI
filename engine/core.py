@@ -1,5 +1,4 @@
 import math
-import os
 import pickle
 from os import listdir
 from os.path import join, isfile
@@ -16,11 +15,37 @@ from vectorial_model import VectorialModel
 from correlation import term_processor
 
 class Core:
-    def __init__(self, corpus_path) -> None:
+    def __init__(self, corpus_path, corpus_name="cran") -> None:
         self.corpus_path = corpus_path
+        self.corpus_name = corpus_name
         self.files: List[str] = []
 
         self.feedback: Feedback = Feedback()
+
+        self.cl: Cleaner = None
+        self.vsm: VectorialModel = None
+        self.boolean_model: BooleanModel = None
+
+        self.doc_tf = {}
+        self.idf = {}
+        self.invert_index = {}
+        self.doc_wights = {}
+        self.doc_norm = {}
+        self.docs_id = {}
+
+        self.start()
+
+        self.corpus_size = len(self.files)
+
+        self.start_search_engine_indexing()
+
+    def refactor(self, corpus_path, corpus_name):
+        self.corpus_path = corpus_path
+        self.corpus_name = corpus_name
+        self.files: List[str] = []
+
+        self.feedback: Feedback = Feedback()
+
         self.cl: Cleaner = None
         self.vsm: VectorialModel = None
         self.boolean_model: BooleanModel = None 
@@ -41,18 +66,20 @@ class Core:
         self.start_search_engine_indexing()
 
     def start(self):
-        self.cl = Cleaner()
+        if self.cl is None:
+            self.cl = Cleaner(self.corpus_path)
+
         self.files = self.__scan_corpus(self.corpus_path)
-        self.docs_id = {i+1: f for i, f in enumerate(self.files)}
+        self.docs_id = {i + 1: f for i, f in enumerate(self.files)}
 
     def start_search_engine_indexing(self):
         try:
-            self.doc_tf = Core.retrieve_from_disk(TF_DOCS_FILE)
-            self.idf = Core.retrieve_from_disk(IDF_FILE)
-            self.doc_wights = Core.retrieve_from_disk(DOCS_W)
-            self.doc_norm = Core.retrieve_from_disk(NORM_DOCS)
-            self.docs_id = Core.retrieve_from_disk(DOCS_IDS)
-            self.query_exp.term_correlation = Core.retrieve_from_disk(CORR)
+            self.doc_tf = self.retrieve_from_disk(TF_DOCS_FILE)
+            self.idf = self.retrieve_from_disk(IDF_FILE)
+            self.doc_wights = self.retrieve_from_disk(DOCS_W)
+            self.doc_norm = self.retrieve_from_disk(NORM_DOCS)
+            self.docs_id = self.retrieve_from_disk(DOCS_IDS)
+            self.query_exp.term_correlation = self.retrieve_from_disk(CORR)
         except:
             for dj, file in self.docs_id.items():
                 plain_text = self.cl.get_text(file)
@@ -63,18 +90,18 @@ class Core:
             self.__calc_idf()
             self.__calc_weights()
 
-            Core.save_to_disk(CORR,self.query_exp.term_correlation)
-            Core.save_to_disk(TF_DOCS_FILE, self.doc_tf)
-            Core.save_to_disk(IDF_FILE, self.idf)
-            Core.save_to_disk(DOCS_W, self.doc_wights)
-            Core.save_to_disk(NORM_DOCS, self.doc_norm)
-            Core.save_to_disk(DOCS_IDS, self.docs_id)
+            self.save_to_disk(CORR,self.query_exp.term_correlation)
+            self.save_to_disk(TF_DOCS_FILE, self.doc_tf)
+            self.save_to_disk(IDF_FILE, self.idf)
+            self.save_to_disk(DOCS_W, self.doc_wights)
+            self.save_to_disk(NORM_DOCS, self.doc_norm)
+            self.save_to_disk(DOCS_IDS, self.docs_id)
 
     def set_feedback(self, _type, doc_id, query):
         self.vsm.set_feedback(_type, doc_id, query)
 
-    # def __calc_tf_skl(self,docs):
-
+    def update_corpus_path(self, new_path: str):
+        self.corpus_path = new_path
 
     def __calc_tf(self, tokens, dj):
         aux = {}
@@ -117,7 +144,11 @@ class Core:
     #     for dj in self.docs_id:
     #         self.doc_norm[dj] = np.linalg.norm([self.doc_wights[k] for k in self.doc_wights if k[1] == dj])
 
-    def load_vectorial_model(self):
+    def load_vectorial_model(self, corpus_name=None):
+
+        if corpus_name is not None and self.corpus_name != corpus_name:
+            self.refactor(Core.map_corpus_to_constants(corpus_name), corpus_name)
+
         self.vsm = VectorialModel(
             doc_tf=self.doc_tf,
             doc_norm=self.doc_norm,
@@ -129,14 +160,18 @@ class Core:
             cl=self.cl,
             feedback=self.feedback)
 
-    def load_boolean_model(self):
+    def load_boolean_model(self, corpus_name=None):
+
+        if corpus_name is not None and self.corpus_name != corpus_name:
+            self.refactor(Core.map_corpus_to_constants(corpus_name), corpus_name)
+
         self.boolean_model = BooleanModel(
             doc_tf=self.doc_tf,
             cl=self.cl,
             docs_ids=self.docs_id)
 
     def __scan_corpus(self, path) -> List[str]:
-        directories = sorted(listdir(path),key=lambda e:int(e))
+        directories = sorted(listdir(path), key=lambda e: int(e))
         files_found = []
         for e in directories:
             file_path = join(path, e)
@@ -161,10 +196,9 @@ class Core:
 
         return body
 
-    @staticmethod
-    def save_to_disk(file_name, struct):
+    def save_to_disk(self, file_name, struct):
         try:
-            file_name = f'tables/'+file_name
+            file_name = f'tables/{self.corpus_name}/' + file_name
             os.makedirs(os.path.dirname(file_name), exist_ok=True)
             with open(file_name, 'wb') as f:
                 pickle.dump(struct, f)
@@ -172,15 +206,14 @@ class Core:
         except:
             print("Something went wrong saving to disk")
 
-    @staticmethod
-    def retrieve_from_disk(file_name):
-        with open(os.path.join(os.getcwd(), f'tables/{file_name}'), 'rb') as tf_docs_file:
+    def retrieve_from_disk(self, file_name):
+        with open(os.path.join(os.getcwd(), f'tables/{self.corpus_name}/{file_name}'), 'rb') as tf_docs_file:
             return pickle.load(tf_docs_file)
 
     def retrieve_doc(self, doc_id):
-        return self.cl.get_text(self.vsm.docs_id[doc_id])
+        return self.cl.get_text(self.docs_id[int(doc_id)])
 
-    def recoverd_docs(self,retrived_docs:dict,relevant_docs:list):
+    def recoverd_docs(self, retrived_docs: dict, relevant_docs: list):
         rr = 0
         nr = 0
         for dicc in retrived_docs:
@@ -190,7 +223,6 @@ class Core:
                 nr += 1
         return rr, nr
 
-    
     def precision(self,retrived_docs:dict,relevant_docs:list):
         rr,nr = self.recoverd_docs(retrived_docs,relevant_docs)
         return (rr/(rr+nr)) * 100
@@ -209,3 +241,16 @@ class Core:
             return (2*p*r/(p+r))
         else: 
             return 0
+
+    @staticmethod
+    def process_corpus_name(name: str) -> str:
+        return name.split()[0].lower()
+
+    @staticmethod
+    def map_corpus_to_constants(name: str) -> str:
+        if name == '20newsgroup':
+            return NEWS_GROUPS_CORPUS
+        elif name == 'med':
+            return MED_CORPUS
+        else:
+            return CRAN_CORPUS

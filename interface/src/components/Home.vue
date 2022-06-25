@@ -2,11 +2,15 @@
   <div class="home-container">
     <img :src="logo"/>
 
-<!--    <SearchInput ref="corpus"/>-->
-<!--    <button @click="corpusRoute">Guardar como ruta del Corpus</button>-->
-<!--    <br>-->
+    <!--    <SearchInput ref="corpus"/>-->
+    <!--    <button @click="corpusRoute">Guardar como ruta del Corpus</button>-->
+    <!--    <br>-->
     <SearchInput ref="searchInput" @submit="onSubmit"/>
     <button @click="handleSearch">Buscar</button>
+    <v-select
+        style="margin-top: 10px; border-radius: 1px"
+        v-model="selected"
+        :options="options"/>
   </div>
 </template>
 
@@ -20,6 +24,8 @@ export default {
   data() {
     return {
       logo: require("@/assets/logo.png"),
+      options: ['CRAN CORPUS', 'MED CORPUS', '20NEWSGROUP CORPUS'],
+      selected: "CRAN CORPUS",
     };
   },
   methods: {
@@ -51,6 +57,7 @@ export default {
           query: {
             value: value,
           },
+          params: {corpus: this.selected}
         });
     },
   },
@@ -88,4 +95,7 @@ export default {
     }
   }
 }
+</style>
+
+<style src="vue-select/dist/vue-select.css">
 </style>
