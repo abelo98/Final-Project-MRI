@@ -56,10 +56,9 @@ def parse_query_request(dir):
         f.close()
         return queries
 
-def run_tests(dir_results,dir_q,dir_corpus):
+def run_tests(dir_results,dir_q,core:Core):
     best = parse_query_rel(dir_results)
     queries = parse_query_request(dir_q)
-    core = Core(dir_corpus)
 
     precision = 0
     recall = 0
@@ -112,10 +111,8 @@ def process_vectorial_model_test_feedback(core: Core, query: str) -> None:
 
 
 def main():
-<<<<<<< HEAD
-    run_tests(CRAN_QUERY_RESULT,CRAN_QUERIES,CRAN_CORPUS)
-
-    # core = Core(CRAN_CORPUS)
+    core = Core(CRAN_CORPUS)
+    run_tests(CRAN_QUERY_RESULT,CRAN_QUERIES,CRAN_CORPUS,core)
 
     # # boolean model
     # # print(process_boolean_model(core))
@@ -132,24 +129,7 @@ def main():
     # print('recall: ',core.recall(response,best[1]),'%')
     # print('f1: ',core.f1(response,best[1]),'%')
 
-=======
-    core = Core(CRAN_CORPUS)
-
-    # boolean model
-    # print(process_boolean_model(core))
-
-    # vectorial model
-    q = "what similarity laws must be obeyed when constructing aeroelastic models\
-    of heated high speed aircraft"
-    response = process_vectorial_model(core, q)
-    r = [184, 29, 31, 12, 51, 102, 13, 14, 15, 57, 378, 859, 185, 30, 37, 52, 142, 195, 875, 56, 66, 95, 462, 497, 858,
-         876, 879, 880, 486]
-    print('precision: ', core.precision(response, r))
-    print('recall: ', core.recall(response, r))
-    print(response)
-
-    process_vectorial_model_test_feedback(core, q)
->>>>>>> 6276cc4031d4c314a35d17ca26470994c0cbd83e
+    # process_vectorial_model_test_feedback(core, q)
 
 
 if __name__ == '__main__':
