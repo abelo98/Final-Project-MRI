@@ -19,7 +19,7 @@ class Cleaner:
         stripped = [re_punc.sub('', w) for w in tokens]
         return stripped
 
-    def doc_to_tokens(self, plain_text):
+    def doc_to_tokens(self, plain_text,use_stemmer=False,use_lematizer = False):
         plain_text = re.sub('from:(.*\n)', '', plain_text)
         plain_text = re.sub('[\w]+[\._]?[\w]+[@]+[\w.]+', '', plain_text)
         plain_text = re.sub('Subject:|subject:', '', plain_text)
@@ -34,8 +34,13 @@ class Cleaner:
         stop_words = set(stopwords.words('english'))
         tokens = [t for t in tokens if not t in stop_words]
         # word to root word
-        lemmatizer = WordNetLemmatizer()
-        tokens = [lemmatizer.lemmatize(word) for word in tokens]
+        if use_stemmer:
+            stemmer = PorterStemmer()
+            tokens = [stemmer.stem(word) for word in tokens]
+
+        if use_lematizer:
+            lemmatizer = WordNetLemmatizer()
+            tokens = [lemmatizer.lemmatize(word) for word in tokens]
         return tokens
         
 
@@ -55,33 +60,33 @@ class Cleaner:
         return subj
 
 
-c = Cleaner()
-exp = c.doc_to_tokens('''dynamic stability of vehicles traversing ascending
-or descending paths through the atmosphere .
-  an analysis is given of the oscillatory motions of vehicles which
-traverse ascending and descending paths through the atmosphere at high
-speed .  the specific case of a skip path is examined in detail, and
-this leads to a form of solution for the oscillatory motion which should
-recur over any trajectory .  the distinguishing feature of this form is
-the appearance of the bessel rather than the trigonometric function as
-the characteristic mode of oscillation .''')
+# c = Cleaner()
+# exp = c.doc_to_tokens('''dynamic stability of vehicles traversing ascending
+# or descending paths through the atmosphere .
+#   an analysis is given of the oscillatory motions of vehicles which
+# traverse ascending and descending paths through the atmosphere at high
+# speed .  the specific case of a skip path is examined in detail, and
+# this leads to a form of solution for the oscillatory motion which should
+# recur over any trajectory .  the distinguishing feature of this form is
+# the appearance of the bessel rather than the trigonometric function as
+# the characteristic mode of oscillation .''')
 
-q = c.doc_to_tokens('''does there exist a good basic treatment of the dynamics of re-entry
-combining consideration of realistic effects with relative simplicity of
-results .''')
+# q = c.doc_to_tokens('''does there exist a good basic treatment of the dynamics of re-entry
+# combining consideration of realistic effects with relative simplicity of
+# results .''')
 
-given = c.doc_to_tokens('''aerodynamic characteristics of two winged reentry vehicles at supersonic
- and hypersonic speeds .
-tests were conducted at the langley research center on two winged
-lifting hypersonic reentry glider configurations . performance, stability,
-and control data are presented at mach numbers of 1.62 and 2.91 for
-angles of attack up to 15degree and at mach numbers of 6.8 and 9.6 for
-angles of attack up to 25degree  .''')
-
-
-equal_toks1 = set(q).intersection(set(exp))
-equal_toks2 = set(q).intersection(set(given))
+# given = c.doc_to_tokens('''aerodynamic characteristics of two winged reentry vehicles at supersonic
+#  and hypersonic speeds .
+# tests were conducted at the langley research center on two winged
+# lifting hypersonic reentry glider configurations . performance, stability,
+# and control data are presented at mach numbers of 1.62 and 2.91 for
+# angles of attack up to 15degree and at mach numbers of 6.8 and 9.6 for
+# angles of attack up to 25degree  .''')
 
 
-print(equal_toks1)
-print(equal_toks2)
+# equal_toks1 = set(q).intersection(set(exp))
+# equal_toks2 = set(q).intersection(set(given))
+
+
+# print(equal_toks1)
+# print(equal_toks2)

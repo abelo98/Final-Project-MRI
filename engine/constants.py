@@ -23,7 +23,7 @@ NEWS_GROUPS_CORPUS_NAME = '20newsgroup'
 CORR = "correlation_mat"
 
 
-CRAN_QUERY_RESULT = f'{BASE_PATH}/queries_rel/cranqrel'
-MED_QUERY_RESULT = f'{BASE_PATH}/queries_rel/MED.REL'
-CRAN_QUERIES = f'{BASE_PATH}/queries_rel/cran.qry'
-MED_QUERIES = f'{BASE_PATH}/queries_rel/MED.QRY'
+CRAN_QUERY_RESULT = f'{os.getcwd()}/queries_rel/cranqrel'
+MED_QUERY_RESULT = f'{os.getcwd()}/queries_rel/MED.REL'
+CRAN_QUERIES = f'{os.getcwd()}/queries_rel/cran.qry'
+MED_QUERIES = f'{os.getcwd()}/queries_rel/MED.QRY'

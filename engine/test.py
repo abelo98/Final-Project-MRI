@@ -112,7 +112,7 @@ def process_vectorial_model_test_feedback(core: Core, query: str) -> None:
 
 def main():
     core = Core(CRAN_CORPUS)
-    run_tests(CRAN_QUERY_RESULT,CRAN_QUERIES,CRAN_CORPUS,core)
+    run_tests(CRAN_QUERY_RESULT,CRAN_QUERIES,core)
 
     # # boolean model
     # # print(process_boolean_model(core))

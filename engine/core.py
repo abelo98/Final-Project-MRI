@@ -25,6 +25,7 @@ class Core:
         self.cl: Cleaner = None
         self.vsm: VectorialModel = None
         self.boolean_model: BooleanModel = None
+        self.query_exp = term_processor()
 
         self.doc_tf = {}
         self.idf = {}
@@ -67,7 +68,7 @@ class Core:
 
     def start(self):
         if self.cl is None:
-            self.cl = Cleaner(self.corpus_path)
+            self.cl = Cleaner()
 
         self.files = self.__scan_corpus(self.corpus_path)
         self.docs_id = {i + 1: f for i, f in enumerate(self.files)}
@@ -83,7 +84,7 @@ class Core:
         except:
             for dj, file in self.docs_id.items():
                 plain_text = self.cl.get_text(file)
-                tokens = self.cl.doc_to_tokens(plain_text)
+                tokens = self.cl.doc_to_tokens(plain_text,use_lematizer=True)
                 self.query_exp.get_corr_in_text(tokens)
                 self.__calc_tf(tokens, dj)
 
