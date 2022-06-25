@@ -73,7 +73,7 @@ class VectorialModel:
         q_tf = self.calc_query_tf(q)
         return self.calc_query_weights(alpha, q_tf)
 
-    def retrieve_id_docs(self, q_weights, threshold=10):
+    def retrieve_id_docs(self, q_weights, threshold=15):
         return self.retrieve_ids(threshold, q_weights)
 
     def set_feedback(self, _type, doc_id, query: List[str] = None):
