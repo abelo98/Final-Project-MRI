@@ -1,5 +1,5 @@
 from nltk import *
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords,wordnet
 
 class term_processor:
     def __init__(self) -> None:
@@ -21,27 +21,31 @@ class term_processor:
                 break
 
     def __closest_term(self,t):
-        s = sorted(self.term_correlation[t].items(),key=lambda kv:kv[1],reverse=True)[:2]
-        for term in s:
-            yield term[0]
+        try:
+            s = sorted(self.term_correlation[t].items(),key=lambda kv:kv[1],reverse=True)[0]
+            yield s[0]
+        except KeyError:
+            yield ''
 
     def expand_query(self,query):
-        query = word_tokenize(query)
+        query = pos_tag(word_tokenize(query))
         query_exp = ''
-        stemmer = PorterStemmer()
+        lemma = WordNetLemmatizer()
+        
         for t in query:
-            
-            if not t in stopwords.words('english') and t.isalpha(): 
-                t = stemmer.stem(t.lower())
+            if not t[0] in stopwords.words('english') and t[0].isalpha(): 
+                posible_t = lemma.lemmatize(t[0].lower())
                 
-                if t in query_exp:continue
-                query_exp += ' ' + t 
+                if posible_t in query_exp :
+                    continue
 
-                for close_t in self.__closest_term(t):
-                    query_exp += ' ' + close_t
-                
+                query_exp += ' ' + posible_t 
+
+                if t[1] == 'NN':
+                    for close_t in self.__closest_term(posible_t):
+                        query_exp += ' ' + close_t  
             else:
-                query_exp += ' ' + t
+                query_exp += ' ' + t[0]
 
         return query_exp
     

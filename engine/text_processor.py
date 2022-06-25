@@ -1,7 +1,7 @@
 import string
 
 from nltk import *
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords,wordnet
 
 
 class Cleaner:
@@ -34,10 +34,10 @@ class Cleaner:
         stop_words = set(stopwords.words('english'))
         tokens = [t for t in tokens if not t in stop_words]
         # word to root word
-       
-        porter = PorterStemmer()
-        tokens = [porter.stem(word) for word in tokens]
+        lemmatizer = WordNetLemmatizer()
+        tokens = [lemmatizer.lemmatize(word) for word in tokens]
         return tokens
+        
 
     def get_subjects(self, file_paths):
         subj = []
