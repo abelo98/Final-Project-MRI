@@ -13,6 +13,7 @@ from feedback import Feedback
 from text_processor import Cleaner
 from vectorial_model import VectorialModel
 
+from correlation import term_processor
 
 class Core:
     def __init__(self, corpus_path) -> None:
@@ -22,7 +23,9 @@ class Core:
         self.feedback: Feedback = Feedback()
         self.cl: Cleaner = None
         self.vsm: VectorialModel = None
-        self.boolean_model: BooleanModel = None
+        self.boolean_model: BooleanModel = None 
+
+        self.query_exp = term_processor()
 
         self.doc_tf = {}
         self.idf = {}
@@ -38,7 +41,7 @@ class Core:
         self.start_search_engine_indexing()
 
     def start(self):
-        self.cl = Cleaner(self.corpus_path)
+        self.cl = Cleaner()
         self.files = self.__scan_corpus(self.corpus_path)
         self.docs_id = {i+1: f for i, f in enumerate(self.files)}
 
@@ -49,15 +52,18 @@ class Core:
             self.doc_wights = Core.retrieve_from_disk(DOCS_W)
             self.doc_norm = Core.retrieve_from_disk(NORM_DOCS)
             self.docs_id = Core.retrieve_from_disk(DOCS_IDS)
+            self.query_exp.term_correlation = Core.retrieve_from_disk(CORR)
         except:
             for dj, file in self.docs_id.items():
                 plain_text = self.cl.get_text(file)
                 tokens = self.cl.doc_to_tokens(plain_text)
+                self.query_exp.get_corr_in_text(tokens)
                 self.__calc_tf(tokens, dj)
 
             self.__calc_idf()
             self.__calc_weights()
 
+            Core.save_to_disk(CORR,self.query_exp.term_correlation)
             Core.save_to_disk(TF_DOCS_FILE, self.doc_tf)
             Core.save_to_disk(IDF_FILE, self.idf)
             Core.save_to_disk(DOCS_W, self.doc_wights)
@@ -189,8 +195,12 @@ class Core:
         rr,nr = self.recoverd_docs(retrived_docs,relevant_docs)
         return (rr/(rr+nr)) * 100
 
-    def recall(self,retrived_docs:dict,relevant_docs:set):
+    def recall(self,retrived_docs:dict,relevant_docs:list):
         rr,_ = self.recoverd_docs(retrived_docs,relevant_docs)
         rn = abs(len(relevant_docs) - rr)
         return (rr/(rr+rn)) * 100
         
+    def f1(self,retrived_docs:dict,relevant_docs:list):
+        p = self.precision(retrived_docs,relevant_docs)
+        r = self.recall(retrived_docs,relevant_docs)
+        return (2*p*r/(p+r))

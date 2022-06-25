@@ -58,7 +58,7 @@ class VectorialModel:
             norm_q = np.linalg.norm(list(query_wights.values()))
             norm_p = norm_d * norm_q
             if norm_p and vect_prod:
-                sim[dj] = vect_prod / (norm_d * norm_q)
+                sim[dj] = vect_prod / norm_p
 
         return sorted(sim.items(), key=lambda kv: kv[1], reverse=True)[:threshold]
 

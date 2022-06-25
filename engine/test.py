@@ -44,10 +44,14 @@ def main():
     # vectorial model
     q = "what similarity laws must be obeyed when constructing aeroelastic models\
     of heated high speed aircraft"
-    response = process_vectorial_model(core,q)
+    q_exp = core.query_exp.expand_query(q)
+    print(q_exp)
+    response = process_vectorial_model(core,q_exp)
     r = [184,29 ,31  ,12  ,51   ,102   ,13   ,14   ,15  ,57  ,378  ,859  ,185  ,30  , 37 , 52  , 142  , 195  , 875  , 56  , 66  , 95  , 462  ,497  , 858, 876, 879, 880,  486]
-    print('precision: ',core.precision(response,r))
-    print('recall: ',core.recall(response,r))
+    print('precision: ',core.precision(response,r),'%')
+    print('recall: ',core.recall(response,r),'%')
+    print('f1: ',core.f1(response,r),'%')
+
 
 
 if __name__ == '__main__':

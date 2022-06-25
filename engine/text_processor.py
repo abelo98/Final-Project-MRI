@@ -5,8 +5,8 @@ from nltk.corpus import stopwords
 
 
 class Cleaner:
-    def __init__(self, path) -> None:## Esto no hace falta
-        self.corpus_path = path
+    def __init__(self) -> None:## Esto no hace falta
+        pass
 
     def get_text(self, path_file):
         with open(path_file, encoding='utf8', errors='ignore') as file:
@@ -34,6 +34,7 @@ class Cleaner:
         stop_words = set(stopwords.words('english'))
         tokens = [t for t in tokens if not t in stop_words]
         # word to root word
+       
         porter = PorterStemmer()
         tokens = [porter.stem(word) for word in tokens]
         return tokens
