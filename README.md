@@ -1,20 +1,24 @@
+### Palabras clave:
+
+**Sistemas de recuperación de información** (SRI), **procesamiento del lenguaje natural** (PLN), **motores de búsqueda** (MB), **Modelo de recuperación información** (MRI).
+
+ ### Introducción
+
+Como se ha ido comprobando a lo largo del curso, los sistemas de recuperación de información tienen que cumplir con el objetivo de otorgar documentos, responder preguntas, procesar paginas web y darles relevancia, entre otras muchas técnicas. Conocemos principalmente los motores de búsquedas dedicados a la tarea de recibir una consulta y entregar una serie de documentos y páginas web que considera relevantes. La explicación exacta de como funciona o qué fases realizan MBs como Chrome o mozilla va más allá del contenido que abarca este trabajo. Este trabajo está enfocado en el desarrollo de un modelo vectorial y otro booleano, que actúan sobre tres corpus distintos(Cran, Med y 20newsgroup).
+
+El modelo vectorial se destaca por el empleo de vectores no binarios y por recuperar los documentos de acuerdo a su ranking de relevancia; esto le da un mayor índice de recuperación de documentos relevantes que el modelo booleano. Cuando hablamos de vectores no binarios, nos referimos a que los documentos pasan por un proceso donde se convierten a un vector, donde cada una de sus componentes son calculadas empleando la fórmula de $tf$ x $idf$, basada en la frecuencia de términos. Las queries pasan por un proceso similar para otorgar pesos a sus componentes y finalmente se determinan los  documentos más relevantes a una query mediante el cálculo del coseno de ángulo entre query y documento.
+
+El modelo booleano se basa en la coincidencia exacta de términos entre el vector de la query con los documentos. Para ello emplea vectores booleanos y no hay existencia de un ranking por lo que todos los documentos son igual de relevantes. A pesar de ser más sencillo puede lograr buenos resultados con corpus que distingan bien sus temas y documentos.
 
 
-Esta seccion ignorala.
 
-<!--Ejecutar además:-->
+Debemos destacar que solo existen tres modelos clásicos y sobre ellos se han ido construyendo otros más avanzados. Estos modelos "evolucionados" tienen diversas particularidades, como el uso de redes neuronales en el modelo vectorial o redes de inferencia en el probabilístico; esto los hace más certeros en cuanto a recuperar información. Incluso con el uso de estas evoluciones de los MRI, no debemos ser absolutos, pues no hay un modelo superior a otro, todo depende de sobre que corpus estemos trabajando, quiénes serán nuestros usuarios, para qué se desarrolla la el modelo, se quiere lograr eficiencia a coste de exactitud total de términos o mayor complejidad temporal en favor de obtener documentos relevantes sin total exactitud en los términos. Muchas son las preguntas que nos hacen decantarnos por un modelo y no por otro, y solo con el análisis de los posibles escenarios es posible una buena elección del Modelo de Recuperación de Información.
 
-- <!--pip3 install fastapi-->
-- <!--pip install "uvicorn[standard]"-->
 
-<!--Como ejecutar el proyecto ?-->
 
-- <!--Situarse dentro de la carpeta engine-->
-- <!--Abrir una terminal en esa ubicacion-->
-- <!--Correr este comando en la terminal `uvicorn main:app`-->
-- <!--Abrir el navegador: http://127.0.0.1:8000/-->
+**Nota**
 
-<!--Nota: Para probar el proyecto se debe copiar el todos los archivos y carpetas del corpus dentro de "./engine/corpus", pues el sistema a partir de ahi realiza el procesamiento. Para la version final se quiere que el usuario pueda introducir la ruta donde se encuentra el corpus dentro de su PC, y con ello ganar en usabilidad y facilitar la interaccion. Para la entrega final tambien se ofrecera una entorno virtual(pipenv) listo para instalar las dependecias.-->
+Debido al tamaño de las tablas de $idf$, $weight\_docs$ y $norm\_docs$, el peso de la aplicación llega a cerca de los $60$ mb. De lo contrario se debe esperar cerca de $40$ minutos a que se calculen estas tablas y luego realizar las consultas sin demora porque los binarios se guardan en su repo local.
 
 
 

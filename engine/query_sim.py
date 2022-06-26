@@ -26,7 +26,7 @@ class query_processor:
                 except KeyError:
                     pass
 
-            if (term_coincidences*100) /len(vector_q) >= 50:
+            if (term_coincidences*100) /len(vector_q) >= 30:
                 norm_q1 = vector_q_saved_and_norm[1]
                 norm_q2 = np.linalg.norm(list(vector_q.values()))
                 norm_p = norm_q1 * norm_q2
