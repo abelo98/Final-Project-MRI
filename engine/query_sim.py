@@ -5,18 +5,17 @@ class query_processor:
     def __init__(self) -> None:
         self.query_historial = {}
 
-    def save_query(self,q,vector_q:dict):
-        self.query_historial[str(q)] = (vector_q,np.linalg.norm(list(vector_q.values())))
-    
+    def save_query(self, q, vector_q: dict):
+        self.query_historial[str(q)] = (vector_q, np.linalg.norm(list(vector_q.values())))
+
     # q is a tuple formed by q[0] = dict (reresenting the vector of the query) 
     # and q[1] is the norm of the vect
-    def similar(self,vector_q,k = 4):
+    def similar(self, vector_q, k=4):
         sim = np.zeros(k)
         queries_result = [None] * k
-        queries_result = [None]*k
         vect_prod = 0
 
-        for query_str ,vector_q_saved_and_norm in self.query_historial.items():
+        for query_str, vector_q_saved_and_norm in self.query_historial.items():
             for t in vector_q:
                 try:
                     vect_prod += vector_q_saved_and_norm[0][t] * vector_q[t]
