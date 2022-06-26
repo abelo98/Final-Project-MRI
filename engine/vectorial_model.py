@@ -72,20 +72,24 @@ class VectorialModel:
 
         return query_process.similar(self.tokens_query, k=3)
 
-    def set_similar(self, query: str):
+    def set_similar(self, query_process: query_processor, query: str, vector_q):
         if self.tokens_query is None or len(self.tokens_query) == 0:
             return
 
-        query_processor.save_query(query, self.tokens_query)
+        query_process.save_query(q=query, vector_q=vector_q)
 
-    def process_query(self, query, alpha=0.5):
+    def process_query(self, query, alpha=0.5, query_process: query_processor = None):
         q = self.cl.doc_to_tokens(query)
 
         self.tokens_query = q
-        self.set_similar(query)
 
         q_tf = self.calc_query_tf(q)
-        return self.calc_query_weights(alpha, q_tf)
+        ans = self.calc_query_weights(alpha, q_tf)
+
+        if query_process is not None:
+            self.set_similar(query_process, query, ans)
+
+        return ans
 
     def retrieve_id_docs(self, q_weights, threshold=15):
         return self.retrieve_ids(threshold, q_weights)

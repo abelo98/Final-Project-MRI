@@ -1,11 +1,11 @@
 import string
 
 from nltk import *
-from nltk.corpus import stopwords,wordnet
+from nltk.corpus import stopwords
 
 
 class Cleaner:
-    def __init__(self) -> None:## Esto no hace falta
+    def __init__(self) -> None:  ## Esto no hace falta
         pass
 
     def get_text(self, path_file):
@@ -19,7 +19,7 @@ class Cleaner:
         stripped = [re_punc.sub('', w) for w in tokens]
         return stripped
 
-    def doc_to_tokens(self, plain_text,use_stemmer=False,use_lematizer = False):
+    def doc_to_tokens(self, plain_text, use_stemmer=False, use_lematizer=False):
         plain_text = re.sub('from:(.*\n)', '', plain_text)
         plain_text = re.sub('[\w]+[\._]?[\w]+[@]+[\w.]+', '', plain_text)
         plain_text = re.sub('Subject:|subject:', '', plain_text)
@@ -42,7 +42,6 @@ class Cleaner:
             lemmatizer = WordNetLemmatizer()
             tokens = [lemmatizer.lemmatize(word) for word in tokens]
         return tokens
-        
 
     def get_subjects(self, file_paths):
         subj = []
@@ -58,7 +57,6 @@ class Cleaner:
 
             subj.append(subject)
         return subj
-
 
 # c = Cleaner()
 # exp = c.doc_to_tokens('''dynamic stability of vehicles traversing ascending
