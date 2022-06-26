@@ -2,6 +2,7 @@ from typing import List, Dict, Any
 
 from constants import *
 from core import Core
+from query_sim import query_processor
 
 
 def process_boolean_model(core: Core) -> List[Dict[str, Any]]:
@@ -14,11 +15,8 @@ def process_boolean_model(core: Core) -> List[Dict[str, Any]]:
     return response
 
 
-def process_vectorial_model(core: Core, query: str) -> List[Dict[str, Any]]:
-    core.load_vectorial_model()
-
-    query_process = core.vsm.process_query(query)
-    file_paths_and_ids_vectorial_model = core.vsm.retrieve_id_docs(query_process)
+def process_vectorial_model(core: Core, query_vect: dict) -> List[Dict[str, Any]]:
+    file_paths_and_ids_vectorial_model = core.vsm.retrieve_id_docs(query_vect)
 
     subjects = core.get_subjects(file_paths_and_ids_vectorial_model)
 
@@ -62,6 +60,7 @@ def parse_query_request(dir):
 def run_tests(dir_results, dir_q, core: Core):
     best = parse_query_rel(dir_results)
     queries = parse_query_request(dir_q)
+    q_p = query_processor()
 
     precision = 0
     recall = 0
@@ -73,25 +72,33 @@ def run_tests(dir_results, dir_q, core: Core):
 
     total_q = len(queries)
 
-    for i, q in enumerate(queries.values()):
+    for i,q in enumerate(queries.values()):
         q_exp = core.query_exp.expand_query(q)
 
-        response_exp = process_vectorial_model(core, q_exp)
-        response_normal = process_vectorial_model(core, q)
+        query_process = core.vsm.process_query(q)
+        query_process_exp = core.vsm.process_query(q_exp)
 
-        precision += core.precision(response_normal, best[i + 1])
-        recall += core.recall(response_normal, best[i + 1])
-        x = core.f1(response_normal, best[i + 1])
+        response_exp = process_vectorial_model(core,query_process)
+        response_normal = process_vectorial_model(core,query_process_exp)
+
+
+        precision += core.precision(response_normal,best[i+1])
+        recall += core.recall(response_normal,best[i+1])
+        x = core.f1(response_normal,best[i+1])
         f1 += x
 
-        if (x == 0):
+        if(x == 0): 
             print("query con 0 f1: ")
             print(" ")
             print(q)
+            print(' ')
+            print('sugested: ', q_p.similar(query_process,k=1))
 
-        precision_exp += core.precision(response_exp, best[i + 1])
-        recall_exp += core.recall(response_exp, best[i + 1])
-        x_exp = core.f1(response_exp, best[i + 1])
+        q_p.save_query(q,query_process)
+
+        precision_exp += core.precision(response_exp,best[i+1])
+        recall_exp += core.recall(response_exp,best[i+1])
+        x_exp = core.f1(response_exp,best[i+1])
         f1_exp += x_exp
 
         if (x_exp == 0):
@@ -114,7 +121,11 @@ def process_vectorial_model_test_feedback(core: Core, query: str) -> None:
 
 def main():
     core = Core(CRAN_CORPUS)
-    run_tests(CRAN_QUERY_RESULT, CRAN_QUERIES, core)
+    core.load_vectorial_model()
+    run_tests(CRAN_QUERY_RESULT,CRAN_QUERIES,core)
+
+
+
 
     # # boolean model
     # # print(process_boolean_model(core))
@@ -124,6 +135,7 @@ def main():
     # q_exp = core.query_exp.expand_query(q)
     # print(q_exp)
     # response = process_vectorial_model(core,q_exp)
+
 
     # best = parse_query_rel(CRAN_QUERY_RESULT)
     # print('precision: ',core.precision(response,best[1]),'%')
