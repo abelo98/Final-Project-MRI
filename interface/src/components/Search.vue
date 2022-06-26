@@ -14,6 +14,9 @@
           :options="options"/>
     </div>
     <div class="body">
+      <h6 v-if="this.vectorialModel">
+        <p>{{ suggestionsQueries.join(". ") }}</p>
+      </h6>
       <div v-for="doc in documents" :key="doc.id" class="document-retrieve">
         <div class="content">
           <div class="text-content">
@@ -59,6 +62,7 @@ export default {
       vectorialModel: true,
       options: ['CRAN CORPUS', 'MED CORPUS', '20NEWSGROUP CORPUS'],
       selected: this.$route.params.corpus,
+      suggestionsQueries: []
     };
   },
   mounted() {
@@ -86,6 +90,12 @@ export default {
         const data = await fetch(url);
         let body = JSON.parse(await data.text());
         this.documents = body;
+
+        if (this.vectorialModel) {
+          const suggestions = await fetch('http://127.0.0.1:8000/query/similar')
+          this.suggestionsQueries = JSON.parse(await suggestions.text())
+        }
+
 
       } catch (err) {
         console.log(`Error ${err}`);
