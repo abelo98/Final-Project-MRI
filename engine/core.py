@@ -220,11 +220,11 @@ class Core:
                 nr += 1
         return rr, nr
 
-    def get_similar(self) -> List[str]:
+    def get_similar(self, query: str) -> List[str]:
         if self.vsm is None:
             return []
 
-        return self.vsm.get_similar(self.query_processor)
+        return self.vsm.get_similar(query, self.query_processor)
 
     def precision(self, retrived_docs: dict, relevant_docs: list):
         rr, nr = self.recoverd_docs(retrived_docs, relevant_docs)

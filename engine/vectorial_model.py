@@ -18,6 +18,7 @@ class VectorialModel:
         self.feedback: Feedback = feedback
 
         self.tokens_query: List[str] = []
+        self.query_info: Dict = None
 
         self.corpus_size = corpus_size
 
@@ -66,11 +67,11 @@ class VectorialModel:
     def retrieve_ids(self, threshold, q_weights):
         return [(dj, self.docs_id[dj]) for dj, _ in self.similarity(threshold, q_weights)]
 
-    def get_similar(self, query_process: query_processor) -> List[str]:
-        if self.tokens_query is None or len(self.tokens_query) == 0:
+    def get_similar(self, query: str, query_process: query_processor) -> List[str]:
+        if self.query_info is None:
             return []
 
-        return query_process.similar(self.tokens_query, k=3)
+        return query_process.similar(query, self.query_info, k=3)
 
     def set_similar(self, query_process: query_processor, query: str, vector_q):
         if self.tokens_query is None or len(self.tokens_query) == 0:
@@ -85,6 +86,8 @@ class VectorialModel:
 
         q_tf = self.calc_query_tf(q)
         ans = self.calc_query_weights(alpha, q_tf)
+
+        self.query_info = ans
 
         if query_process is not None:
             self.set_similar(query_process, query, ans)
