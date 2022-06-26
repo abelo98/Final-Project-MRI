@@ -1,3 +1,4 @@
+from cProfile import run
 from typing import List, Dict, Any
 
 from constants import *
@@ -92,7 +93,7 @@ def run_tests(dir_results, dir_q, core: Core):
             print(" ")
             print(q)
             print(' ')
-            print('sugested: ', q_p.similar(query_process,k=1))
+            print('sugested: ', q_p.similar(q,query_process,k=1))
 
         q_p.save_query(q,query_process)
 
@@ -122,14 +123,16 @@ def process_vectorial_model_test_feedback(core: Core, query: str) -> None:
 def main():
     core = Core(CRAN_CORPUS)
     core.load_vectorial_model()
-    q = 'boy'
-    query_process = core.vsm.process_query(q)
+    run_tests(CRAN_QUERY_RESULT,CRAN_QUERIES,core)
+    # core.load_vectorial_model()
+    # q = 'boy'
+    # query_process = core.vsm.process_query(q)
 
-    q_exp = core.query_exp.expand_query(q)
-    print(q_exp)
-    print(' ')
-    response = process_vectorial_model(core,query_process)
-    print(response)
+    # q_exp = core.query_exp.expand_query(q)
+    # print(q_exp)
+    # print(' ')
+    # response = process_vectorial_model(core,query_process)
+    # print(response)
 
 
 if __name__ == '__main__':
