@@ -164,10 +164,7 @@ class Core:
             docs_ids=self.docs_id)
 
     def __scan_corpus(self, path) -> List[str]:
-        if self.corpus_name == '20newsgroup':
-            directories = listdir(path)
-        else:
-            directories = sorted(listdir(path), key=lambda e: int(e))
+        directories = sorted(listdir(path), key=lambda e: int(e))
         files_found = []
         for e in directories:
             file_path = join(path, e)

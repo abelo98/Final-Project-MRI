@@ -92,7 +92,7 @@ def run_tests(dir_results, dir_q, core: Core):
             print(" ")
             print(q)
             print(' ')
-            print('sugested: ', q_p.similar(q,query_process,k=1))
+            print('sugested: ', q_p.similar(query_process,k=1))
 
         q_p.save_query(q,query_process)
 
@@ -120,7 +120,7 @@ def process_vectorial_model_test_feedback(core: Core, query: str) -> None:
 
 
 def main():
-    core = Core(NEWS_GROUPS_CORPUS,NEWS_GROUPS_CORPUS_NAME)
+    core = Core(CRAN_CORPUS)
     core.load_vectorial_model()
     q = 'boy'
     query_process = core.vsm.process_query(q)
