@@ -3,6 +3,7 @@ from typing import List, Dict
 import numpy as np
 
 from feedback import Feedback
+from query_sim import query_processor
 
 
 class VectorialModel:
@@ -65,10 +66,23 @@ class VectorialModel:
     def retrieve_ids(self, threshold, q_weights):
         return [(dj, self.docs_id[dj]) for dj, _ in self.similarity(threshold, q_weights)]
 
+    def get_similar(self, query_process: query_processor) -> List[str]:
+        if self.tokens_query is None or len(self.tokens_query) == 0:
+            return []
+
+        return query_process.similar(self.tokens_query, k=3)
+
+    def set_similar(self, query: str):
+        if self.tokens_query is None or len(self.tokens_query) == 0:
+            return
+
+        query_processor.save_query(query, self.tokens_query)
+
     def process_query(self, query, alpha=0.5):
         q = self.cl.doc_to_tokens(query)
 
         self.tokens_query = q
+        self.set_similar(query)
 
         q_tf = self.calc_query_tf(q)
         return self.calc_query_weights(alpha, q_tf)

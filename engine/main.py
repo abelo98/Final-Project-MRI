@@ -65,3 +65,8 @@ def read_file(id: str):
 @app.put("/feedback/{doc_id}")
 def feedback(doc_id: int, body: FeedbackBody):
     return core.set_feedback(body.type, doc_id, None)
+
+
+@app.get("/query/similar")
+def get_similar():
+    return core.get_similar()
