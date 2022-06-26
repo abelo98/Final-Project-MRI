@@ -31,4 +31,18 @@ class query_processor:
                     sim[index] = s
                     queries_result[index] = query_str
 
+<<<<<<< HEAD
+            if (term_coincidences*100) /len(vector_q) >= 30:
+                norm_q1 = vector_q_saved_and_norm[1]
+                norm_q2 = np.linalg.norm(list(vector_q.values()))
+                norm_p = norm_q1 * norm_q2
+                if norm_p and vect_prod:
+                    s = vect_prod / norm_p
+                    if s > sim.min():
+                        index = sim.argmin()
+                        sim[index] = s
+                        queries_result[index] = query_str
+                        
+=======
+>>>>>>> 3f87bbd4937b42545b864114705799997135ef04
         return queries_result

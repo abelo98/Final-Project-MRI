@@ -22,8 +22,9 @@ class term_processor:
 
     def __closest_term(self,t):
         try:
-            s = sorted(self.term_correlation[t].items(),key=lambda kv:kv[1],reverse=True)[0]
-            yield s[0]
+            s = sorted(self.term_correlation[t].items(),key=lambda kv:kv[1],reverse=True)[:5]
+            for element,_ in s:
+                yield element
         except KeyError:
             yield ''
 

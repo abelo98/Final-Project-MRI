@@ -122,27 +122,14 @@ def process_vectorial_model_test_feedback(core: Core, query: str) -> None:
 def main():
     core = Core(CRAN_CORPUS)
     core.load_vectorial_model()
-    run_tests(CRAN_QUERY_RESULT,CRAN_QUERIES,core)
+    q = 'boy'
+    query_process = core.vsm.process_query(q)
 
-
-
-
-    # # boolean model
-    # # print(process_boolean_model(core))
-
-    # # vectorial model
-    # q = parse_query_request(CRAN_QUERIES)
-    # q_exp = core.query_exp.expand_query(q)
-    # print(q_exp)
-    # response = process_vectorial_model(core,q_exp)
-
-
-    # best = parse_query_rel(CRAN_QUERY_RESULT)
-    # print('precision: ',core.precision(response,best[1]),'%')
-    # print('recall: ',core.recall(response,best[1]),'%')
-    # print('f1: ',core.f1(response,best[1]),'%')
-
-    # process_vectorial_model_test_feedback(core, q)
+    q_exp = core.query_exp.expand_query(q)
+    print(q_exp)
+    print(' ')
+    response = process_vectorial_model(core,query_process)
+    print(response)
 
 
 if __name__ == '__main__':

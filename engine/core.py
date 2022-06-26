@@ -137,17 +137,6 @@ class Core:
         for dj in self.docs_id:
             self.doc_norm[dj] = np.linalg.norm([self.doc_wights[k] for k in self.doc_wights if k[1] == dj])
 
-    # def __calc_weights_norm(self):
-    #     for t in self.invert_index:
-    #         for d in self.docs_id:
-    #             try:
-    #                 self.doc_wights[t, d] = self.doc_tf[t, d] * self.idf[t]
-    #                 for _ in 
-    #             except KeyError:
-    #                 pass
-    #     for dj in self.docs_id:
-    #         self.doc_norm[dj] = np.linalg.norm([self.doc_wights[k] for k in self.doc_wights if k[1] == dj])
-
     def load_vectorial_model(self, corpus_name=None):
 
         if corpus_name is not None and self.corpus_name != corpus_name:
@@ -249,9 +238,6 @@ class Core:
             return (2 * p * r / (p + r))
         else:
             return 0
-
-    # def map(self,retrived_docs:dict,relevant_docs:list):
-    #     for 
 
     @staticmethod
     def process_corpus_name(name: str) -> str:
