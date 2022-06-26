@@ -243,6 +243,9 @@ class Core:
         else: 
             return 0
 
+    # def map(self,retrived_docs:dict,relevant_docs:list):
+    #     for 
+
     @staticmethod
     def process_corpus_name(name: str) -> str:
         return name.split()[0].lower()

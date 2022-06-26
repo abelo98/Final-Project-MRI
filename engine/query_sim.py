@@ -12,14 +12,15 @@ class query_processor:
     def similar(self,vector_q,k = 4):
         sim = np.zeros(k)
         queries_result = [None]*k
+        vect_prod = 0
 
-        for query_str ,vector_q_saved in self.query_historial.items():
+        for query_str ,vector_q_saved_and_norm in self.query_historial.items():
             for t in vector_q:
                 try:
-                    vect_prod += vector_q_saved[0][t] * vector_q[t]
+                    vect_prod += vector_q_saved_and_norm[0][t] * vector_q[t]
                 except KeyError:
                     pass
-            norm_q1 = vector_q_saved[1][t]
+            norm_q1 = vector_q_saved_and_norm[1]
             norm_q2 = np.linalg.norm(list(vector_q.values()))
             norm_p = norm_q1 * norm_q2
             if norm_p and vect_prod:
