@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class query_processor:
     def __init__(self) -> None:
         self.query_historial = {}

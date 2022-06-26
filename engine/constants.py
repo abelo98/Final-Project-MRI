@@ -12,7 +12,7 @@ DOCS_IDS = "docs_ids"
 MY_CORPUS = f'{BASE_PATH}/corpus2'
 CRAN_CORPUS = f'{BASE_PATH}/corpus_cran'
 MED_CORPUS = f'{BASE_PATH}/corpus_med'
-NEWS_GROUPS_CORPUS = f'{BASE_PATH}/corpus/20newsgroup'
+NEWS_GROUPS_CORPUS = f'{BASE_PATH}/corpus_20newsgroup'
 REAL_CORPUS = f'{BASE_PATH}/corpus'
 OTHER = f'{BASE_PATH}/rec.autos'
 
@@ -21,7 +21,6 @@ MED_CORPUS_NAME = 'name'
 NEWS_GROUPS_CORPUS_NAME = '20newsgroup'
 
 CORR = "correlation_mat"
-
 
 CRAN_QUERY_RESULT = f'{os.getcwd()}/queries_rel/cranqrel'
 MED_QUERY_RESULT = f'{os.getcwd()}/queries_rel/MED.REL'

@@ -26,11 +26,12 @@ def process_vectorial_model(core: Core, query_vect: dict) -> List[Dict[str, Any]
 
     return response
 
+
 def parse_query_rel(dir):
     with open(dir) as f:
         docs_for_query = {}
         queries_result = f.read().split('\n')
-        
+
         for result in queries_result:
             elements = result.split(' ')
             try:
@@ -40,21 +41,23 @@ def parse_query_rel(dir):
         f.close()
         return docs_for_query
 
+
 def parse_query_request(dir):
     with open(dir) as f:
         queries = {}
         queries_splited = f.read().split('\n.I')
-       
-        for i,splited_text in enumerate(queries_splited):
+
+        for i, splited_text in enumerate(queries_splited):
             q = splited_text.split('\n.W\n')[1]
             try:
-                queries[i+1].append(q)
+                queries[i + 1].append(q)
             except KeyError:
-                queries[i+1] = q
+                queries[i + 1] = q
         f.close()
         return queries
 
-def run_tests(dir_results,dir_q,core:Core):
+
+def run_tests(dir_results, dir_q, core: Core):
     best = parse_query_rel(dir_results)
     queries = parse_query_request(dir_q)
     q_p = query_processor()
@@ -71,14 +74,14 @@ def run_tests(dir_results,dir_q,core:Core):
 
     for i,q in enumerate(queries.values()):
         q_exp = core.query_exp.expand_query(q)
-        
+
         query_process = core.vsm.process_query(q)
         query_process_exp = core.vsm.process_query(q_exp)
 
         response_exp = process_vectorial_model(core,query_process)
         response_normal = process_vectorial_model(core,query_process_exp)
 
-        
+
         precision += core.precision(response_normal,best[i+1])
         recall += core.recall(response_normal,best[i+1])
         x = core.f1(response_normal,best[i+1])
@@ -98,18 +101,18 @@ def run_tests(dir_results,dir_q,core:Core):
         x_exp = core.f1(response_exp,best[i+1])
         f1_exp += x_exp
 
-        if(x_exp == 0): 
-            print("query expanded con 0 f1 : ",i+1)
+        if (x_exp == 0):
+            print("query expanded con 0 f1 : ", i + 1)
             print(" ")
             print(q_exp)
 
-    print('mean precision: ',precision/total_q,'%')
-    print('mean recall: ',recall/total_q,'%')
-    print('mean f1: ',f1/total_q,'%')
+    print('mean precision: ', precision / total_q, '%')
+    print('mean recall: ', recall / total_q, '%')
+    print('mean f1: ', f1 / total_q, '%')
     print(" ")
-    print('mean precision with expanded queries: ',precision_exp/total_q,'%')
-    print('mean recall with expanded queries: ',recall_exp/total_q,'%')
-    print('mean f1 with expanded queries: ',f1_exp/total_q,'%')
+    print('mean precision with expanded queries: ', precision_exp / total_q, '%')
+    print('mean recall with expanded queries: ', recall_exp / total_q, '%')
+    print('mean f1 with expanded queries: ', f1_exp / total_q, '%')
 
 
 def process_vectorial_model_test_feedback(core: Core, query: str) -> None:
@@ -120,7 +123,7 @@ def main():
     core = Core(CRAN_CORPUS)
     core.load_vectorial_model()
     run_tests(CRAN_QUERY_RESULT,CRAN_QUERIES,core)
-    
+
 
 
 
