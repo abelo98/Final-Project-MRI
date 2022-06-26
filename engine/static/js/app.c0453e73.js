@@ -62,17 +62,12 @@
     }, "034f": function (e, t, n) {
         "use strict";
         n("85ec")
-    }, "2f1e": function (e, t, n) {
-        "use strict";
-        n("bae6")
-    }, 3187: function (e, t, n) {
     }, "33a2": function (e, t, n) {
         "use strict";
         n("3d35")
+    }, "347d": function (e, t, n) {
     }, "3d35": function (e, t, n) {
-    }, 4651: function (e, t, n) {
-        "use strict";
-        n("a34e")
+    }, "461b": function (e, t, n) {
     }, "51f2": function (e, t, n) {
         e.exports = n.p + "static/img/search.5d247d74.svg"
     }, "56d7": function (e, t, n) {
@@ -127,7 +122,11 @@
             }, l = u, p = (n("33a2"), n("2877")), d = Object(p["a"])(l, s, i, !1, null, "1125ec08", null), f = d.exports,
             m = {
                 components: {SearchInput: f}, data: function () {
-                    return {logo: n("cf05"), options: ["CRAN CORPUS", "MED CORPUS"], selected: "CRAN CORPUS"}
+                    return {
+                        logo: n("cf05"),
+                        options: ["CRAN CORPUS", "MED CORPUS", "20NEWSGROUP CORPUS"],
+                        selected: "CRAN CORPUS"
+                    }
                 }, methods: {
                     handleSearch: function () {
                         var e = this.$refs["searchInput"];
@@ -153,7 +152,7 @@
                         })
                     }
                 }
-            }, h = m, v = (n("2f1e"), n("77f5"), Object(p["a"])(h, c, a, !1, null, "900e2644", null)), g = v.exports,
+            }, h = m, v = (n("f636"), n("77f5"), Object(p["a"])(h, c, a, !1, null, "2e6f87ca", null)), g = v.exports,
             b = function () {
                 var e = this, t = e.$createElement, n = e._self._c || t;
                 return n("div", {staticClass: "search-container"}, [e.loading ? n("div", {staticClass: "loader"}, [n("img", {attrs: {src: e.searchLoad}})]) : e._e(), n("div", {staticClass: "header"}, [n("img", {
@@ -192,7 +191,7 @@
                             e.selected = t
                         }, expression: "selected"
                     }
-                })], 1), n("div", {staticClass: "body"}, e._l(e.documents, (function (t) {
+                })], 1), n("div", {staticClass: "body"}, [this.vectorialModel ? n("h6", [n("p", [e._v(e._s(e.suggestionsQueries.join(". ")))])]) : e._e(), e._l(e.documents, (function (t) {
                     return n("div", {
                         key: t.id,
                         staticClass: "document-retrieve"
@@ -224,8 +223,8 @@
                             }
                         }
                     })])])
-                })), 0)])
-            }, y = [], x = n("1da1"), k = (n("96cf"), n("99af"), {
+                }))], 2)])
+            }, x = [], y = n("1da1"), k = (n("96cf"), n("99af"), {
                 components: {SearchInput: f}, data: function () {
                     return {
                         loading: !1,
@@ -235,8 +234,9 @@
                         dislikeImg: n("8148"),
                         documents: [],
                         vectorialModel: !0,
-                        options: ["CRAN CORPUS", "MED CORPUS"],
-                        selected: this.$route.params.corpus
+                        options: ["CRAN CORPUS", "MED CORPUS", "20NEWSGROUP CORPUS"],
+                        selected: this.$route.params.corpus,
+                        suggestionsQueries: []
                     }
                 }, mounted: function () {
                     var e = this.$route.query.value;
@@ -248,8 +248,8 @@
                         "" !== e && (this.$router.push({name: "search", query: {value: e}}), this.getDocuments(e))
                     }, getDocuments: function (e) {
                         var t = this;
-                        return Object(x["a"])(regeneratorRuntime.mark((function n() {
-                            var r, o, c;
+                        return Object(y["a"])(regeneratorRuntime.mark((function n() {
+                            var r, o, c, a;
                             return regeneratorRuntime.wrap((function (n) {
                                 while (1) switch (n.prev = n.next) {
                                     case 0:
@@ -257,20 +257,30 @@
                                     case 5:
                                         return o = n.sent, n.t0 = JSON, n.next = 9, o.text();
                                     case 9:
-                                        n.t1 = n.sent, c = n.t0.parse.call(n.t0, n.t1), t.documents = c, n.next = 17;
+                                        if (n.t1 = n.sent, c = n.t0.parse.call(n.t0, n.t1), t.documents = c, !t.vectorialModel) {
+                                            n.next = 21;
+                                            break
+                                        }
+                                        return n.next = 15, fetch("http://127.0.0.1:8000/query/similar");
+                                    case 15:
+                                        return a = n.sent, n.t2 = JSON, n.next = 19, a.text();
+                                    case 19:
+                                        n.t3 = n.sent, t.suggestionsQueries = n.t2.parse.call(n.t2, n.t3);
+                                    case 21:
+                                        n.next = 26;
                                         break;
-                                    case 14:
-                                        n.prev = 14, n.t2 = n["catch"](1), console.log("Error ".concat(n.t2));
-                                    case 17:
+                                    case 23:
+                                        n.prev = 23, n.t4 = n["catch"](1), console.log("Error ".concat(n.t4));
+                                    case 26:
                                         t.loading = !1;
-                                    case 18:
+                                    case 27:
                                     case"end":
                                         return n.stop()
                                 }
-                            }), n, null, [[1, 14]])
+                            }), n, null, [[1, 23]])
                         })))()
                     }, setFeedback: function (e, t) {
-                        return Object(x["a"])(regeneratorRuntime.mark((function n() {
+                        return Object(y["a"])(regeneratorRuntime.mark((function n() {
                             var r, o, c, a;
                             return regeneratorRuntime.wrap((function (n) {
                                 while (1) switch (n.prev = n.next) {
@@ -300,10 +310,10 @@
                         this.$router.push({name: "document", params: {id: e}})
                     }
                 }
-            }), S = k, _ = (n("9991"), Object(p["a"])(S, b, y, !1, null, "04d752b7", null)), O = _.exports,
+            }), S = k, O = (n("74e9"), Object(p["a"])(S, b, x, !1, null, "186cf96e", null)), _ = O.exports,
             C = function () {
                 var e = this, t = e.$createElement, n = e._self._c || t;
-                return n("div", {staticClass: "body"}, [e._v(" " + e._s(e.text) + " ")])
+                return n("div", {staticClass: "body"}, [n("p", [e._v(e._s(e.text))])])
             }, w = [], j = {
                 data: function () {
                     return {text: ""}
@@ -313,7 +323,7 @@
                 }, methods: {
                     getDocument: function (e) {
                         var t = this;
-                        return Object(x["a"])(regeneratorRuntime.mark((function n() {
+                        return Object(y["a"])(regeneratorRuntime.mark((function n() {
                             var r, o;
                             return regeneratorRuntime.wrap((function (n) {
                                 while (1) switch (n.prev = n.next) {
@@ -334,38 +344,43 @@
                         })))()
                     }
                 }
-            }, M = j, $ = (n("4651"), Object(p["a"])(M, C, w, !1, null, "14201b30", null)), I = $.exports;
+            }, M = j, P = (n("8f0f"), Object(p["a"])(M, C, w, !1, null, "e24998a6", null)), R = P.exports;
         r["a"].use(o["a"]);
-        var P = [{path: "/", name: "home", component: g}, {
+        var $ = [{path: "/", name: "home", component: g}, {
                 path: "/search/:corpus",
                 name: "search",
-                component: O
-            }, {path: "/document/id/:id", name: "document", component: I}, {path: "*", redirect: {name: "home"}}],
-            R = new o["a"]({mode: "history", routes: P}), A = R, D = function () {
+                component: _
+            }, {path: "/document/id/:id", name: "document", component: R}, {path: "*", redirect: {name: "home"}}],
+            I = new o["a"]({mode: "history", routes: $}), N = I, E = function () {
                 var e = this, t = e.$createElement, n = e._self._c || t;
                 return n("div", {attrs: {id: "app"}}, [n("router-view")], 1)
-            }, E = [], N = (n("034f"), {}), J = Object(p["a"])(N, D, E, !1, null, null, null), T = J.exports, U = n("4a7a"),
-            q = n.n(U);
-        r["a"].config.productionTip = !1, r["a"].component("v-select", q.a), new r["a"]({
-            router: A,
+            }, U = [], A = (n("034f"), {}), D = Object(p["a"])(A, E, U, !1, null, null, null), J = D.exports, q = n("4a7a"),
+            T = n.n(q);
+        r["a"].config.productionTip = !1, r["a"].component("v-select", T.a), new r["a"]({
+            router: N,
             render: function (e) {
-                return e(T)
+                return e(J)
             }
         }).$mount("#app")
+    }, "74e9": function (e, t, n) {
+        "use strict";
+        n("461b")
     }, 8148: function (e, t, n) {
         e.exports = n.p + "static/img/dislike.89c298f0.svg"
     }, "85ec": function (e, t, n) {
-    }, 9991: function (e, t, n) {
+    }, "8f0f": function (e, t, n) {
         "use strict";
-        n("3187")
-    }, a34e: function (e, t, n) {
-    }, bae6: function (e, t, n) {
+        n("dc5f")
     }, c8e1: function (e, t, n) {
         e.exports = n.p + "static/img/like.9b4e4d46.svg"
     }, cf05: function (e, t, n) {
         e.exports = n.p + "static/img/logo.13a68a62.png"
+    }, dc5f: function (e, t, n) {
+    }, f636: function (e, t, n) {
+        "use strict";
+        n("347d")
     }, fac4: function (e, t, n) {
         e.exports = n.p + "static/img/search_load.787e700c.svg"
     }
 });
-//# sourceMappingURL=app.e9388cbb.js.map
+//# sourceMappingURL=app.c0453e73.js.map
