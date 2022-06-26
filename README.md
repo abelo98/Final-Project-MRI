@@ -20,7 +20,7 @@ Esta seccion ignorala.
 
 #### Modelo booleano:
 
-El modelo booleano es uno de los modelos clásicos de recuperación de información. Este está basado en la lógica booleana y la teoría de conjuntos, los documentos a buscar y la consulta del usuario, son concebidos como un conjunto de términos. La representación está basada en cuando los documentos contienen o no a los términos de la consulta.
+El modelo booleano es uno de los modelos clásicos de recuperación de información. Este está basado en la lógica booleana y la teoría de conjuntos. Los documentos a buscar y la consulta del usuario, son concebidos como un conjunto de términos. La representación está basada en cuando los documentos contienen o no a los términos de la consulta.
 
 El modelo booleano posee, notablemente, ciertas ventajas que hace que quizá llame un poco la antención de quienes quieren adentrarse en el tema de la recuperación de información, puesto que es un modelo simple basado en conjuntos que presenta grandes facilidades a la hora de implementarlo y comprenderlo; pero por le otro lado posee también varias limitaciones radicando estas principalmente en el hecho de que no posee ranking, solo recupera los documentos donde la coincidencia es exacta - no hay correspondencia parcial -, además de considerar a todos los términos igual de importantes; por solo mencionar algunas. 
 
