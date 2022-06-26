@@ -89,7 +89,7 @@ def run_tests(dir_results,dir_q,core:Core):
             print(" ")
             print(q)
             print(' ')
-            print('sugested: ', q_p.similar(query_process,k=1))
+            print('sugested: ', q_p.similar(q,query_process,k=1))
 
         q_p.save_query(q,query_process)
 
