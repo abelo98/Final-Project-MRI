@@ -120,9 +120,18 @@ def process_vectorial_model_test_feedback(core: Core, query: str) -> None:
 
 
 def main():
-    core = Core(CRAN_CORPUS)
+    core = Core(NEWS_GROUPS_CORPUS,NEWS_GROUPS_CORPUS_NAME)
     core.load_vectorial_model()
-    run_tests(CRAN_QUERY_RESULT,CRAN_QUERIES,core)
+    q = 'car'
+    query_process = core.vsm.process_query(q)
+
+    q_exp = core.query_exp.expand_query(q)
+    print(q_exp)
+    print(' ')
+    response = process_vectorial_model(core,query_process)
+    print(response)
+
+    # run_tests(CRAN_QUERY_RESULT,CRAN_QUERIES,core)
 
 
 
