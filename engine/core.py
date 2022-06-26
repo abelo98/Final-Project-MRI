@@ -8,11 +8,12 @@ import numpy as np
 
 from boolean_model import BooleanModel
 from constants import *
+from correlation import term_processor
 from feedback import Feedback
+from query_sim import query_processor
 from text_processor import Cleaner
 from vectorial_model import VectorialModel
 
-from correlation import term_processor
 
 class Core:
     def __init__(self, corpus_path, corpus_name="cran") -> None:
@@ -21,6 +22,7 @@ class Core:
         self.files: List[str] = []
 
         self.feedback: Feedback = Feedback()
+        self.query_processor = query_processor()
 
         self.cl: Cleaner = None
         self.vsm: VectorialModel = None
@@ -49,9 +51,10 @@ class Core:
 
         self.cl: Cleaner = None
         self.vsm: VectorialModel = None
-        self.boolean_model: BooleanModel = None 
+        self.boolean_model: BooleanModel = None
 
         self.query_exp = term_processor()
+        self.query_processor = query_processor()
 
         self.doc_tf = {}
         self.idf = {}
@@ -84,14 +87,14 @@ class Core:
         except:
             for dj, file in self.docs_id.items():
                 plain_text = self.cl.get_text(file)
-                tokens = self.cl.doc_to_tokens(plain_text,use_lematizer=True)
+                tokens = self.cl.doc_to_tokens(plain_text, use_lematizer=True)
                 self.query_exp.get_corr_in_text(tokens)
                 self.__calc_tf(tokens, dj)
 
             self.__calc_idf()
             self.__calc_weights()
 
-            self.save_to_disk(CORR,self.query_exp.term_correlation)
+            self.save_to_disk(CORR, self.query_exp.term_correlation)
             self.save_to_disk(TF_DOCS_FILE, self.doc_tf)
             self.save_to_disk(IDF_FILE, self.idf)
             self.save_to_disk(DOCS_W, self.doc_wights)
@@ -227,23 +230,27 @@ class Core:
                 nr += 1
         return rr, nr
 
-    def precision(self,retrived_docs:dict,relevant_docs:list):
-        rr,nr = self.recoverd_docs(retrived_docs,relevant_docs)
-        return (rr/(rr+nr)) * 100
-  
+    def get_similar(self) -> List[str]:
+        if self.vsm is None:
+            return []
 
-    def recall(self,retrived_docs:dict,relevant_docs:list):
-        rr,_ = self.recoverd_docs(retrived_docs,relevant_docs)
+        return self.vsm.get_similar(self.query_processor)
+
+    def precision(self, retrived_docs: dict, relevant_docs: list):
+        rr, nr = self.recoverd_docs(retrived_docs, relevant_docs)
+        return (rr / (rr + nr)) * 100
+
+    def recall(self, retrived_docs: dict, relevant_docs: list):
+        rr, _ = self.recoverd_docs(retrived_docs, relevant_docs)
         rn = abs(len(relevant_docs) - rr)
-        return (rr/(rr+rn)) * 100
-        
-        
-    def f1(self,retrived_docs:dict,relevant_docs:list):
-        p = self.precision(retrived_docs,relevant_docs)
-        r = self.recall(retrived_docs,relevant_docs)
+        return (rr / (rr + rn)) * 100
+
+    def f1(self, retrived_docs: dict, relevant_docs: list):
+        p = self.precision(retrived_docs, relevant_docs)
+        r = self.recall(retrived_docs, relevant_docs)
         if p != 0 or r != 0:
-            return (2*p*r/(p+r))
-        else: 
+            return (2 * p * r / (p + r))
+        else:
             return 0
 
     # def map(self,retrived_docs:dict,relevant_docs:list):
