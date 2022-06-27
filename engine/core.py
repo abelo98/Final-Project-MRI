@@ -82,7 +82,7 @@ class Core:
             self.idf = self.retrieve_from_disk(IDF_FILE)
             self.doc_wights = self.retrieve_from_disk(DOCS_W)
             self.doc_norm = self.retrieve_from_disk(NORM_DOCS)
-            self.docs_id = self.retrieve_from_disk(DOCS_IDS)
+            # self.docs_id = self.retrieve_from_disk(DOCS_IDS)
             self.query_exp.term_correlation = self.retrieve_from_disk(CORR)
         except:
             for dj, file in self.docs_id.items():
@@ -99,7 +99,7 @@ class Core:
             self.save_to_disk(IDF_FILE, self.idf)
             self.save_to_disk(DOCS_W, self.doc_wights)
             self.save_to_disk(NORM_DOCS, self.doc_norm)
-            self.save_to_disk(DOCS_IDS, self.docs_id)
+            # self.save_to_disk(DOCS_IDS, self.docs_id)
 
     def set_feedback(self, _type, doc_id, query):
         self.vsm.set_feedback(_type, doc_id, query)
@@ -138,7 +138,6 @@ class Core:
             self.doc_norm[dj] = np.linalg.norm([self.doc_wights[k] for k in self.doc_wights if k[1] == dj])
 
     def load_vectorial_model(self, corpus_name=None):
-
         if corpus_name is not None and self.corpus_name != corpus_name:
             self.refactor(Core.map_corpus_to_constants(corpus_name), corpus_name)
 

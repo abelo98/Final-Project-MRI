@@ -121,9 +121,9 @@ def process_vectorial_model_test_feedback(core: Core, query: str) -> None:
 
 
 def main():
-    core = Core(CRAN_CORPUS)
-    core.load_vectorial_model()
-    run_tests(CRAN_QUERY_RESULT,CRAN_QUERIES,core)
+    core = Core(MED_CORPUS)
+    core.load_vectorial_model(MED_CORPUS_NAME)
+    run_tests(MED_QUERY_RESULT,MED_QUERIES,core)
     # core.load_vectorial_model()
     # q = 'boy'
     # query_process = core.vsm.process_query(q)

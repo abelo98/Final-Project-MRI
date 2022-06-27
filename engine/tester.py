@@ -25,12 +25,14 @@ from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize
 
  
-ps = PorterStemmer()
+ps = SnowballStemmer("english")
 lemma = WordNetLemmatizer()
+pst =PorterStemmer()
  
-sentence = "Programmers program with programming languages and give sol"
+sentence = "Programmers program programming"
 words = word_tokenize(sentence)
  
 for w in words:
     print(w, " : ", ps.stem(w))
+    print(w, " : ", pst.stem(w))
     print(w, " : ", lemma.lemmatize(w))
