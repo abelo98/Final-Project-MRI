@@ -74,7 +74,7 @@ def run_tests(dir_results, dir_q, core: Core):
     total_q = len(queries)
 
     for i,q in enumerate(queries.values()):
-        q_exp = core.query_exp.expand_query(q)
+        q_exp = core.query_exp.expand_query(q)[1]
 
         query_process = core.vsm.process_query(q)
         query_process_exp = core.vsm.process_query(q_exp)
@@ -120,20 +120,32 @@ def process_vectorial_model_test_feedback(core: Core, query: str) -> None:
     core.vsm.process_query(query)
 
 
-def main():
-    core = Core(MED_CORPUS)
+def test_med():
+    core = Core(MED_CORPUS,MED_CORPUS_NAME)
     core.load_vectorial_model(MED_CORPUS_NAME)
     run_tests(MED_QUERY_RESULT,MED_QUERIES,core)
-    # core.load_vectorial_model()
-    # q = 'boy'
-    # query_process = core.vsm.process_query(q)
+    
+def test_cran():
+    core = Core(CRAN_CORPUS)
+    core.load_vectorial_model(CRAN_CORPUS_NAME)
+    run_tests(CRAN_QUERY_RESULT,CRAN_QUERIES,core)
 
-    # q_exp = core.query_exp.expand_query(q)
-    # print(q_exp)
-    # print(' ')
-    # response = process_vectorial_model(core,query_process)
-    # print(response)
+def test_20newsgroup(q:str):
+    core = Core(NEWS_GROUPS_CORPUS,NEWS_GROUPS_CORPUS_NAME)
+    core.load_vectorial_model(NEWS_GROUPS_CORPUS_NAME)
+    query_process = core.vsm.process_query(q)
+
+    q_exp = core.query_exp.expand_query(q)
+    print(q_exp)
+    print(' ')
+    response = process_vectorial_model(core,query_process)
+    print(response)
 
 
+def main():
+    test_med()
+    test_cran()
+
+    
 if __name__ == '__main__':
     main()

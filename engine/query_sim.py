@@ -14,7 +14,7 @@ class query_processor:
     def similar(self, q_original, vector_q, k=4):
         sim = np.zeros(k)
         queries_result = [None] * k
-
+        percent_of_coincidence = 30
         for query_str, vector_q_saved_and_norm in self.query_historial.items():
             vect_prod = 0
             term_coincidences = 0
@@ -26,7 +26,7 @@ class query_processor:
                 except KeyError:
                     pass
 
-            if len(vector_q) > 0 and (term_coincidences * 100) / len(vector_q) >= 30:
+            if len(vector_q) > 0 and (term_coincidences * 100) / len(vector_q) >= percent_of_coincidence:
                 norm_q1 = vector_q_saved_and_norm[1]
                 norm_q2 = np.linalg.norm(list(vector_q.values()))
                 norm_p = norm_q1 * norm_q2

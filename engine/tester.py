@@ -24,15 +24,17 @@ from nltk.corpus import wordnet
 from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize
 
+ss = wordnet.synsets('big')
+print('Synonym of big is: ' + ss[0].lemmas()[0].name())
  
-ps = SnowballStemmer("english")
-lemma = WordNetLemmatizer()
-pst =PorterStemmer()
+# ps = SnowballStemmer("english")
+# lemma = WordNetLemmatizer()
+# pst =PorterStemmer()
  
-sentence = "Programmers program programming"
-words = word_tokenize(sentence)
+# sentence = "Programmers program programming"
+# words = word_tokenize(sentence)
  
-for w in words:
-    print(w, " : ", ps.stem(w))
-    print(w, " : ", pst.stem(w))
-    print(w, " : ", lemma.lemmatize(w))
+# for w in words:
+#     print(w, " : ", ps.stem(w))
+#     print(w, " : ", pst.stem(w))
+#     print(w, " : ", lemma.lemmatize(w))
