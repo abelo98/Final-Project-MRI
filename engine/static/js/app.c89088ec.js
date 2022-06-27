@@ -67,7 +67,7 @@
         n("3d35")
     }, "347d": function (e, t, n) {
     }, "3d35": function (e, t, n) {
-    }, "461b": function (e, t, n) {
+    }, "40aa": function (e, t, n) {
     }, "51f2": function (e, t, n) {
         e.exports = n.p + "static/img/search.5d247d74.svg"
     }, "56d7": function (e, t, n) {
@@ -191,7 +191,7 @@
                             e.selected = t
                         }, expression: "selected"
                     }
-                })], 1), n("div", {staticClass: "body"}, [this.vectorialModel ? n("h6", [n("p", [e._v(e._s(e.suggestionsQueries.join(". ")))])]) : e._e(), e._l(e.documents, (function (t) {
+                })], 1), n("div", {staticClass: "body"}, [this.vectorialModel && e.suggestionsQueries.length > 0 ? n("h5", [e._v(" Quizá quisiste decir: " + e._s(e.suggestionsQueries.join(". ")) + " ")]) : e._e(), e._l(e.documents, (function (t) {
                     return n("div", {
                         key: t.id,
                         staticClass: "document-retrieve"
@@ -261,7 +261,7 @@
                                             n.next = 21;
                                             break
                                         }
-                                        return n.next = 15, fetch("http://127.0.0.1:8000/query/similar");
+                                        return n.next = 15, fetch("http://127.0.0.1:8000/query/similar?query=".concat(e));
                                     case 15:
                                         return a = n.sent, n.t2 = JSON, n.next = 19, a.text();
                                     case 19:
@@ -310,7 +310,7 @@
                         this.$router.push({name: "document", params: {id: e}})
                     }
                 }
-            }), S = k, O = (n("74e9"), Object(p["a"])(S, b, x, !1, null, "186cf96e", null)), _ = O.exports,
+            }), S = k, O = (n("b37d"), Object(p["a"])(S, b, x, !1, null, "29267ad5", null)), _ = O.exports,
             C = function () {
                 var e = this, t = e.$createElement, n = e._self._c || t;
                 return n("div", {staticClass: "body"}, [n("p", [e._v(e._s(e.text))])])
@@ -354,23 +354,23 @@
             I = new o["a"]({mode: "history", routes: $}), N = I, E = function () {
                 var e = this, t = e.$createElement, n = e._self._c || t;
                 return n("div", {attrs: {id: "app"}}, [n("router-view")], 1)
-            }, U = [], A = (n("034f"), {}), D = Object(p["a"])(A, E, U, !1, null, null, null), J = D.exports, q = n("4a7a"),
-            T = n.n(q);
+            }, U = [], A = (n("034f"), {}), D = Object(p["a"])(A, E, U, !1, null, null, null), q = D.exports, J = n("4a7a"),
+            T = n.n(J);
         r["a"].config.productionTip = !1, r["a"].component("v-select", T.a), new r["a"]({
             router: N,
             render: function (e) {
-                return e(J)
+                return e(q)
             }
         }).$mount("#app")
-    }, "74e9": function (e, t, n) {
-        "use strict";
-        n("461b")
     }, 8148: function (e, t, n) {
         e.exports = n.p + "static/img/dislike.89c298f0.svg"
     }, "85ec": function (e, t, n) {
     }, "8f0f": function (e, t, n) {
         "use strict";
         n("dc5f")
+    }, b37d: function (e, t, n) {
+        "use strict";
+        n("40aa")
     }, c8e1: function (e, t, n) {
         e.exports = n.p + "static/img/like.9b4e4d46.svg"
     }, cf05: function (e, t, n) {
@@ -383,4 +383,4 @@
         e.exports = n.p + "static/img/search_load.787e700c.svg"
     }
 });
-//# sourceMappingURL=app.c0453e73.js.map
+//# sourceMappingURL=app.c89088ec.js.map

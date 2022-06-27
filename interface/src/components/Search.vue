@@ -14,9 +14,9 @@
           :options="options"/>
     </div>
     <div class="body">
-      <h6 v-if="this.vectorialModel">
-        <p>{{ suggestionsQueries.join(". ") }}</p>
-      </h6>
+      <h5 v-if="this.vectorialModel && suggestionsQueries.length > 0">
+        Quizá quisiste decir: {{ suggestionsQueries.join(". ") }}
+      </h5>
       <div v-for="doc in documents" :key="doc.id" class="document-retrieve">
         <div class="content">
           <div class="text-content">
@@ -92,7 +92,7 @@ export default {
         this.documents = body;
 
         if (this.vectorialModel) {
-          const suggestions = await fetch('http://127.0.0.1:8000/query/similar')
+          const suggestions = await fetch(`http://127.0.0.1:8000/query/similar?query=${value}`)
           this.suggestionsQueries = JSON.parse(await suggestions.text())
         }
 

@@ -71,5 +71,5 @@ def feedback(doc_id: int, body: FeedbackBody):
 
 
 @app.get("/query/similar")
-def get_similar():
-    return core.get_similar()
+def get_similar(query: str):
+    return core.get_similar(query)
