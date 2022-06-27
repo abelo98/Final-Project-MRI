@@ -191,6 +191,110 @@ Finalmente para el cálculo de los pesos del vector documento la idea es ir por 
 
 Aquí están plasmados algunos procesos análogos para cualquier corpus o modelo que se emplee.
 
+**Empleo de métricas**
+
+Para poder llevar a cabo una análisis de los modelos desarrollados se programaron las principales métricas estudiadas en conferencia: precisión, recobrado y $f_1$. Sabemos que para emplear estas métricas son necesarios la cardinalidad de los conjuntos de documentos relevantes recuperados ($rr$), relevantes no recuperados ($rn$) y los no relevantes recuperados $(nr)$, esto debido a:
+
+- $P = \frac{rr}{rr+nr}$
+- $R = \frac{rr}{rr+rn}$
+- $f_1 = \frac{2PR}{P+R}$
+
+Como la precisión y el recobrado se descompensan entre sí (si aumenta el recobrado disminuye la precisión y viceversa), es más fiable el análisis mediante $f_1$ que logra un equilibrio entre ambas métricas.
+
+Las funciones empleadas para las métricas son las siguientes:
+
+```python
+def recoverd_docs(self, retrived_docs: dict, relevant_docs: list):
+        rr = 0
+        nr = 0
+        for dicc in retrived_docs:
+            if dicc['id'] in relevant_docs:
+                rr += 1
+            else:
+                nr += 1
+        return rr, nr
+
+    def precision(self, retrived_docs: dict, relevant_docs: list):
+        rr, nr = self.recoverd_docs(retrived_docs, relevant_docs)
+        if rr and nr:
+            return (rr / (rr + nr)) * 100
+        else:
+            return 0
+
+    def recall(self, retrived_docs: dict, relevant_docs: list):
+        rr, _ = self.recoverd_docs(retrived_docs, relevant_docs)
+        rn = abs(len(relevant_docs) - rr)
+        if rr and rn:
+            return (rr / (rr + rn)) * 100
+        else:
+            return 0
+
+    def f1(self, retrived_docs: dict, relevant_docs: list):
+        p = self.precision(retrived_docs, relevant_docs)
+        r = self.recall(retrived_docs, relevant_docs)
+        if p != 0 or r != 0:
+            return (2 * p * r / (p + r))
+        else:
+            return 0
+```
+
+
+
+La primera función es la encargada de devolvernos los documentos relevantes recuperados y los no relevantes recuperados, lo que se obtiene de forma sencilla si tenemos el conjunto de recuperados y de los considerados relevantes por los expertos.
+
+**Nota**
+
+Como apunte que debemos tener en cuenta los documentos que se consideran relevantes es debido a que un grupo de expertos determina su relevancia. Consideran un documento relevante si responde a queries definidas para  los corpus cran y med, para ello no necesariamente tienen que aparecer los términos de la query en el documento, pues puede ser que se responda con sinónimos o de otra forma.
+
+
+
+**Parseo de corpus**
+
+Los corpus cran y med tienen una forma particular en que están confeccionados. En el caso de cran, un documento tiene la siguiente estructura:
+
+```
+.I 1148
+.T
+knudsen flow through a circular capillary .
+.A
+w. c. demarcus and e. h. hopper
+.B
+carbide and carbon chemicals company, k-25 plant, post office box p,
+oak ridge, tennessee
+.W
+knudsen flow through a circular capillary .
+the problem of knudsen flow through a circular capillary has been
+often discussed, usually by the momentum transfer method .  however,
+p. clausing gave a rigorous formulation for the problem and obtained an
+integral equation for which he gave an approximate solution .  from
+time to time the accuracy of clausing's solution has been questioned
+and since clausing did not give a rigorous estimate of his error we
+have reinvestigated the problem .
+```
+
+Para el caso de med un ejemplo es el siguiente:
+
+```
+.I 1
+.W
+correlation between maternal and fetal plasma levels of glucose and free
+fatty acids .                                                           
+  correlation coefficients have been determined between the levels of   
+glucose and ffa in maternal and fetal plasma collected at delivery .    
+significant correlations were obtained between the maternal and fetal   
+glucose levels and the maternal and fetal ffa levels . from the size of 
+the correlation coefficients and the slopes of regression lines it      
+appears that the fetal plasma glucose level at delivery is very strongly
+dependent upon the maternal level whereas the fetal ffa level at        
+delivery is only slightly dependent upon the maternal level .           
+```
+
+El módulo $parse\_corpus.py$ es el encargado de extraer cada documento de los corpus anteriores y crear un archivo para cada uno. Esto con el objetivo de que se puedan escanear de forma correcta. Para este objetivo es necesario pasar como primer argumento del módulo la dirección donde salvar cada documento extraído, dirección del corpus a procesar y nombre del corpus. Esto se hace con el objetivo de aplicar diferentes técnicas de extracción según el nombre del corpus, ya que los mismos no tiene una misma estructura.
+
+**Testeo de los modelos:**
+
+Para llevar a cabo el testeo de los diferentes modelos en cada corpus se creó el módulo $main.py$. Este módulo consta de las funciones necesarias para probar los corpus cran y med de forma automática y 20newsgroup de forma manual y analizar los resultados y métricas sin empleo de la API. Para automatizar el testeo de los corpus cran y med existen dos documentos que poseen un conjunto de queries para cada corpus y otros dos indincando para la query con número $x$ es relevante el documento $i$ con nivel de relevancia $j$.
+
 **Escaneo del corpus:**
 
 Este es el mecanismo mediante el cual se obtiene todos los posibles documentos a partir de una dirección. Para ello recursivamente analiza los subdirectorios y va conformando una lista con todos las direcciones de los documentos que encuentra. 
