@@ -227,12 +227,18 @@ class Core:
 
     def precision(self, retrived_docs: dict, relevant_docs: list):
         rr, nr = self.recoverd_docs(retrived_docs, relevant_docs)
-        return (rr / (rr + nr)) * 100
+        if rr and nr:
+            return (rr / (rr + nr)) * 100
+        else:
+            return 0
 
     def recall(self, retrived_docs: dict, relevant_docs: list):
         rr, _ = self.recoverd_docs(retrived_docs, relevant_docs)
         rn = abs(len(relevant_docs) - rr)
-        return (rr / (rr + rn)) * 100
+        if rr and rn:
+            return (rr / (rr + rn)) * 100
+        else:
+            return 0
 
     def f1(self, retrived_docs: dict, relevant_docs: list):
         p = self.precision(retrived_docs, relevant_docs)
