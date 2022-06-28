@@ -223,7 +223,7 @@ class Core:
         if self.vsm is None:
             return []
 
-        return self.vsm.get_similar(query, self.query_processor)
+        return self.vsm.get_similar(query, self.query_processor) + self.query_exp.expand_query(query)
 
     def precision(self, retrived_docs: dict, relevant_docs: list):
         rr, nr = self.recoverd_docs(retrived_docs, relevant_docs)
